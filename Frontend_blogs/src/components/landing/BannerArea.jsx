@@ -32,8 +32,33 @@ export default function BannerArea({ data, favorites, toggleFavorite }) {
 
 
             }}
+
             onClick={() => toggleFavorite(blog.id)}
           />
+
+            />
+          </div>
+        </div>
+        <div className="col-lg-6 align-self-center">
+          <div className="banner-details mt-4 mt-lg-0 ">
+            <div className="post-meta-single">
+              <ul>
+                <li>
+                  <Link to={`/blog/${blog.id}`} className="tag-base tag-blue" >
+                    {blog.category.name}
+                  </Link>
+                </li>
+                <li className="date">
+                  <i className="fa fa-clock-o" />
+                  {(new Date(blog.created_at)).getDay()}.{(new Date(blog.created_at)).getMonth()}.{(new Date(blog.created_at)).getFullYear()}
+                </li>
+              </ul>
+            </div>
+            <h2>{blog.title}</h2>
+            <p>{blog.short_description}. </p>
+            <Link to={`/blog/${blog.id}`} className="btn btn-base ">Read More</Link>
+          </div>
+
         </div>
       </div>
       <div className="col-lg-6 align-self-center">

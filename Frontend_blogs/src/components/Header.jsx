@@ -4,27 +4,22 @@ import { Helmet } from "react-helmet";
 
 export default function Header() {
   const location = useLocation();
+  const currentPath = location.pathname;
 
-  // Function to generate dynamic page title based on the current route
   const getPageTitle = () => {
-    switch (location.pathname) {
-      case "/":
+    if (currentPath.startsWith('/blog')) {
+      return "Blog Details";
+    }
+    // Add other route conditions as needed
+    switch (currentPath) {
+      case '/':
         return "Home";
-      case "/blogdetails":
-        return "Blog Details";
-      case "/favorite":
-        return "Favorite Products";
-      case "/blog":
-        return "Blogs";
-      case "/user":
-        return "User Dashboard";
-        case "/contact":
-          return "Contact";
-          case "/about":
-            return "About Us";
-
+      case '/about':
+        return "About Us";
+      case '/contact':
+        return "Contact";
       default:
-        return "My Website"; // Default title for any unrecognized route
+        return "Page Not Found";
     }
   };
 
@@ -59,7 +54,7 @@ export default function Header() {
               <div className="col-xl-6 col-lg-5 align-self-center">
                 <div className="logo text-md-left text-center">
                   <a className="main-logo" href="index.html">
-                    <img src="assets/img/logo.png" alt="img" />
+                    <img src="/assets/img/logo.png" alt="img" />
                   </a>
                 </div>
               </div>
