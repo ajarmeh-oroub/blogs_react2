@@ -4297,6 +4297,7 @@ h3 {
   margin-right: 5px;
   border-radius: 3px;
 }
+.pagination-margin { margin-bottom: 20px; }
 
 .pagination {
   display: flex;

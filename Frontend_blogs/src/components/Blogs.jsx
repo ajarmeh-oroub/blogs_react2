@@ -109,16 +109,17 @@ export default function Blogs() {
                   ))}
                 </div>
                 <ReactPaginate
-                  previousLabel={"previous"}
-                  nextLabel={"next"}
-                  breakLabel={"..."}
-                  pageCount={pageCount}
-                  marginPagesDisplayed={2}
-                  pageRangeDisplayed={5}
-                  onPageChange={handlePageClick}
-                  containerClassName={"pagination"}
-                  activeClassName={"active"}
-                />
+    previousLabel={"previous"}
+    nextLabel={"next"}
+    breakLabel={"..."}
+    pageCount={pageCount}
+    marginPagesDisplayed={2}
+    pageRangeDisplayed={5}
+    onPageChange={handlePageClick}
+    containerClassName={"pagination pagination-margin"}
+    activeClassName={"active"}
+/>
+
               </div>
             )}
           </div>
