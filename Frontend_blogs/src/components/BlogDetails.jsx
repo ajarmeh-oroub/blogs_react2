@@ -190,7 +190,23 @@ export default function BlogDetails() {
 
           {/* Start Blog Post Sidebar */}
           <div className="col-lg-4 sidebar-widgets">
-            {/* Sidebar content goes here */}
+            <div className="widget-wrap" style={{ padding: '20px', backgroundColor: '#ffffff', borderRadius: '10px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}>
+              <div className="single-sidebar-widget post-category-widget" style={{ marginBottom: '30px' }}>
+                <h4 className="single-sidebar-widget__title" style={{ fontSize: '18px', fontWeight: 'bold', color: '#1e2229', borderBottom: '2px solid #007BFF', paddingBottom: '10px' }}>
+                  Category
+                </h4>
+                <ul className="cat-list mt-20" style={{ listStyle: 'none', padding: 0, color: '#555' }}>
+                  {categories.map((category) => (
+                    <li key={category.id} style={{ marginBottom: '10px' }}>
+                      <a href="#" className="d-flex justify-content-between" style={{ textDecoration: 'none', color: '#1e2229', fontWeight: '500', transition: 'color 0.3s' }}>
+                        <p>{category.name}</p>
+                        <p>{category.post_count}</p>
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
           </div>
         </div>
       </div>
