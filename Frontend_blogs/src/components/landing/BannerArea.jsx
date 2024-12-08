@@ -27,7 +27,9 @@ export default function BannerArea({ data, favorites, toggleFavorite }) {
               position: "absolute",
               top:"40px",
               right:"20px",
-              zIndex:3
+              zIndex:3,
+              textShadow: "#000 1px 1px 4px"
+
 
             }}
             onClick={() => toggleFavorite(blog.id)}
@@ -54,7 +56,6 @@ export default function BannerArea({ data, favorites, toggleFavorite }) {
           <Link to={`/blog/${blog.id}`} className="btn btn-base">
             Read More
           </Link>
-          {/* Heart Icon */}
         </div>
       </div>
     </div>
@@ -80,9 +81,10 @@ export default function BannerArea({ data, favorites, toggleFavorite }) {
                       marginLeft: "10px",
                       fontSize: "24px",
                       position: "absolute",
-                      top:"10px",
+                      top:"20px",
                       right:"10px",
-                      zIndex:3
+                      zIndex:3,
+                      textShadow: "#000 1px 1px 4px"
 
                     }}
                     onClick={() => toggleFavorite(blog.id)}
@@ -105,7 +107,6 @@ export default function BannerArea({ data, favorites, toggleFavorite }) {
                       </li>
                     </ul>
                   </div>
-                  {/* Heart Icon */}
                 </div>
               </div>
             </div>

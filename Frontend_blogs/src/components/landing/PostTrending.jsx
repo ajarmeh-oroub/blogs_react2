@@ -17,8 +17,9 @@ export default function PostTrending({ trends, latest,  data, favorites, toggleF
               marginLeft: "10px",
               fontSize: "24px",
               position: "absolute",
-              top:"10px",
-              right:"10px"
+              top:"20px",
+              right:"10px",
+              textShadow: "#000 1px 1px 4px"
 
             }}
             onClick={() => toggleFavorite(trend.id)}

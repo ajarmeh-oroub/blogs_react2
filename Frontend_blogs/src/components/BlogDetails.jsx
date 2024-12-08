@@ -1,19 +1,20 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import { getCatigories } from "../Services/Api";
+import { fetchFavorites, toggleFavorite, getCatigories } from "../Services/API";
 import BlogSummarizer from "./BlogSummary";
 
 export default function BlogDetails() {
-  const [isSummary, setSummary] = useState(true);
   const { id } = useParams(); // Blog ID
   const [blog, setBlog] = useState(null); // Blog details
   const [comments, setComments] = useState([]); // Blog comments
   const [newComment, setNewComment] = useState(""); // New comment input
   const [name, setName] = useState(""); // User's name for the comment
   const [email, setEmail] = useState(""); // Optional email
-  const [error, setError] = useState(null);
-  const [categories, setCategories] = useState([]);
+  const [error, setError] = useState(null); // Error handling
+  const [categories, setCategories] = useState([]); // Blog categories
+  const [isSummary, setSummary] = useState(true); // Show summary or full article
+  const [isFavorite, setIsFavorite] = useState(false); // Track favorite status
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -43,30 +44,39 @@ export default function BlogDetails() {
       .catch((error) => setError(error.message));
   }, [id]);
 
+  useEffect(() => {
+    // Fetch favorite status
+    const fetchFavoriteStatus = async () => {
+      try {
+        const userId = 1; // Replace with logged-in user's ID
+        const favorites = await fetchFavorites(userId);
+        setIsFavorite(favorites.has(parseInt(id)));
+      } catch (error) {
+        console.error("Error fetching favorite status:", error);
+      }
+    };
+
+    fetchFavoriteStatus();
+  }, [id]);
+
   const handleCommentSubmit = (e) => {
     e.preventDefault();
 
-    // Validate form inputs
     if (!newComment || !name) {
       alert("Please fill in both your name and comment.");
       return;
     }
 
-    // Construct the request payload
     const payload = {
       comment: newComment,
       name: name,
       email: email || null, // Optional email
     };
 
-    // Send new comment to the API using Axios
     axios
       .post(`http://localhost:8000/api/blogs/${id}/comments`, payload)
       .then((response) => {
-        // Update comments list
         setComments((prev) => [...prev, response.data]);
-
-        // Reset form inputs
         setNewComment("");
         setName("");
         setEmail("");
@@ -77,7 +87,17 @@ export default function BlogDetails() {
       });
   };
 
-  // Conditional rendering for error or loading states
+  const handleToggleFavorite = async () => {
+    try {
+      const userId = 1; // Replace with logged-in user's ID
+      await toggleFavorite(userId, parseInt(id), isFavorite);
+      setIsFavorite(!isFavorite);
+    } catch (error) {
+      console.error("Error toggling favorite status:", error);
+      alert("Failed to update favorite status. Please try again.");
+    }
+  };
+
   if (error) {
     return <div className="container">Error: {error}</div>;
   }
@@ -110,26 +130,40 @@ export default function BlogDetails() {
                         src="img/blog/user-img.png"
                         alt=""
                       />
+                        <i
+                          className={`fa fa-heart`}
+                          style={{
+                            color: isFavorite ? "red" : "white",
+                            cursor: "pointer",
+                            marginLeft: "10px",
+                            fontSize: "34px",
+                            position: "absolute",
+                            top: "30px",
+                            right:"30px",
+                            zIndex:3,
+                            textShadow: "#000 1px 1px 4px"
+
+                          }}
+                          onClick={handleToggleFavorite}
+                        />
                     </div>
                   </div>
                 </div>
               </div>
-              <p>
-        {blog.article}
-      </p>
- 
-      {isSummary && (
-        <div style={{ marginTop: "20px" }}>
-          <BlogSummarizer blogarticle={blog.article} />
-        </div>
-      )}
-    </div>
+              <p>{blog.article}</p>
+
+              {/* Blog Summary */}
+              {isSummary && (
+                <div style={{ marginTop: "20px" }}>
+                  <BlogSummarizer blogarticle={blog.article} />
+                </div>
+              )}
+            </div>
 
             {/* Add Comment Form */}
             <div className="comment-form">
               <h4>Leave a Comment</h4>
               <form onSubmit={handleCommentSubmit}>
-                {/* Name Input */}
                 <input
                   type="text"
                   className="form-control"
@@ -138,8 +172,6 @@ export default function BlogDetails() {
                   onChange={(e) => setName(e.target.value)}
                   required
                 />
-
-                {/* Email Input */}
                 <input
                   type="email"
                   className="form-control mt-2"
@@ -147,8 +179,6 @@ export default function BlogDetails() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 />
-
-                {/* Comment Textarea */}
                 <textarea
                   className="form-control mt-2"
                   rows="4"
@@ -157,8 +187,6 @@ export default function BlogDetails() {
                   onChange={(e) => setNewComment(e.target.value)}
                   required
                 ></textarea>
-
-                {/* Submit Button */}
                 <button type="submit" className="btn btn-primary mt-2">
                   Submit
                 </button>
@@ -188,17 +216,49 @@ export default function BlogDetails() {
             </div>
           </div>
 
-          {/* Start Blog Post Sidebar */}
+          {/* Blog Sidebar */}
           <div className="col-lg-4 sidebar-widgets">
-            <div className="widget-wrap" style={{ padding: '20px', backgroundColor: '#ffffff', borderRadius: '10px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}>
-              <div className="single-sidebar-widget post-category-widget" style={{ marginBottom: '30px' }}>
-                <h4 className="single-sidebar-widget__title" style={{ fontSize: '18px', fontWeight: 'bold', color: '#1e2229', borderBottom: '2px solid #007BFF', paddingBottom: '10px' }}>
+            <div
+              className="widget-wrap"
+              style={{
+                padding: "20px",
+                backgroundColor: "#ffffff",
+                borderRadius: "10px",
+                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+              }}
+            >
+              <div
+                className="single-sidebar-widget post-category-widget"
+                style={{ marginBottom: "30px" }}
+              >
+                <h4
+                  className="single-sidebar-widget__title"
+                  style={{
+                    fontSize: "18px",
+                    fontWeight: "bold",
+                    color: "#1e2229",
+                    borderBottom: "2px solid #007BFF",
+                    paddingBottom: "10px",
+                  }}
+                >
                   Category
                 </h4>
-                <ul className="cat-list mt-20" style={{ listStyle: 'none', padding: 0, color: '#555' }}>
+                <ul
+                  className="cat-list mt-20"
+                  style={{ listStyle: "none", padding: 0, color: "#555" }}
+                >
                   {categories.map((category) => (
-                    <li key={category.id} style={{ marginBottom: '10px' }}>
-                      <a href="#" className="d-flex justify-content-between" style={{ textDecoration: 'none', color: '#1e2229', fontWeight: '500', transition: 'color 0.3s' }}>
+                    <li key={category.id} style={{ marginBottom: "10px" }}>
+                      <a
+                        href="#"
+                        className="d-flex justify-content-between"
+                        style={{
+                          textDecoration: "none",
+                          color: "#1e2229",
+                          fontWeight: "500",
+                          transition: "color 0.3s",
+                        }}
+                      >
                         <p>{category.name}</p>
                         <p>{category.post_count}</p>
                       </a>

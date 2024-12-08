@@ -17,9 +17,10 @@ export default function PostGrid({ grid, favorites, toggleFavorite}) {
                       marginLeft: "10px",
                       fontSize: "24px",
                       position: "absolute",
-                      top:"10px",
+                      top:"20px",
                       right:"10px",
-                      zIndex:3
+                      zIndex:3,
+                      textShadow: "#000 1px 1px 4px"
 
                     }}
                     onClick={() => toggleFavorite(blog.id)}
