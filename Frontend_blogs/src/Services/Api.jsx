@@ -183,7 +183,9 @@ export default {
   createBlog,
   getCatigories,
   updateBlog,
-  deleteblog
+  deleteblog,
+  fetchFavorites,
+  toggleFavorite
 };
 
 

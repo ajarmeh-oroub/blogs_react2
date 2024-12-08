@@ -3,39 +3,35 @@ import { Link } from "react-router-dom";
 
 export default function BannerArea({ data, favorites, toggleFavorite }) {
   const bannerBlogs = data.map((blog) => (
-    <div className="row" key={blog.id}>
-      <div className="col-lg-6">
-        <div className="thumb after-left-top">
-          <img
-            src={blog.image}
-            alt="img"
-            style={{
-              height: "400px",
-              width: "900px",
-              transform: "translate(20px, 20px)",
-              position: "relative",
-              borderRadius: "8px",
-            }}
-          />
-          <i
-            className={`fa fa-heart`}
-            style={{
-              color: favorites.has(blog.id) ? "red" : "white",
-              cursor: "pointer",
-              marginLeft: "10px",
-              fontSize: "24px",
-              position: "absolute",
-              top:"40px",
-              right:"20px",
-              zIndex:3,
-              textShadow: "#000 1px 1px 4px"
-
-
-            }}
-
-            onClick={() => toggleFavorite(blog.id)}
-          />
-
+    <React.Fragment key={blog.id}>
+      <div className="row">
+        <div className="col-lg-6">
+          <div className="thumb after-left-top">
+            <img
+              src={blog.image}
+              alt="img"
+              style={{
+                height: "400px",
+                width: "900px",
+                transform: "translate(20px, 20px)",
+                position: "relative",
+                borderRadius: "8px",
+              }}
+            />
+            <i
+              className={`fa fa-heart`}
+              style={{
+                color: favorites.has(blog.id) ? "red" : "white",
+                cursor: "pointer",
+                marginLeft: "10px",
+                fontSize: "24px",
+                position: "absolute",
+                top: "40px",
+                right: "20px",
+                zIndex: 3,
+                textShadow: "#000 1px 1px 4px",
+              }}
+              onClick={() => toggleFavorite(blog.id)}
             />
           </div>
         </div>
@@ -44,7 +40,7 @@ export default function BannerArea({ data, favorites, toggleFavorite }) {
             <div className="post-meta-single">
               <ul>
                 <li>
-                  <Link to={`/blog/${blog.id}`} className="tag-base tag-blue" >
+                  <Link to={`/blog/${blog.id}`} className="tag-base tag-blue">
                     {blog.category.name}
                   </Link>
                 </li>
@@ -58,7 +54,6 @@ export default function BannerArea({ data, favorites, toggleFavorite }) {
             <p>{blog.short_description}. </p>
             <Link to={`/blog/${blog.id}`} className="btn btn-base ">Read More</Link>
           </div>
-
         </div>
       </div>
       <div className="col-lg-6 align-self-center">
@@ -83,7 +78,7 @@ export default function BannerArea({ data, favorites, toggleFavorite }) {
           </Link>
         </div>
       </div>
-    </div>
+    </React.Fragment>
   ));
 
   return (
@@ -106,11 +101,10 @@ export default function BannerArea({ data, favorites, toggleFavorite }) {
                       marginLeft: "10px",
                       fontSize: "24px",
                       position: "absolute",
-                      top:"20px",
-                      right:"10px",
-                      zIndex:3,
-                      textShadow: "#000 1px 1px 4px"
-
+                      top: "20px",
+                      right: "10px",
+                      zIndex: 3,
+                      textShadow: "#000 1px 1px 4px",
                     }}
                     onClick={() => toggleFavorite(blog.id)}
                   />
@@ -141,3 +135,4 @@ export default function BannerArea({ data, favorites, toggleFavorite }) {
     </div>
   );
 }
+

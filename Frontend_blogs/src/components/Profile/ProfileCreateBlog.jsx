@@ -50,7 +50,7 @@ export default function ProfileCreateBlog({ setIsCreatingBlog }) {
 
     try {
       const apiUrl = "https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-xl-base-1.0";
-      const apiKey = "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"; // Replace with your API key
+      const apiKey = "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"; 
       
       const response = await axios.post(
         apiUrl,

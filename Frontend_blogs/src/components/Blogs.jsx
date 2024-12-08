@@ -1,25 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import ReactPaginate from 'react-paginate';
-import { getBlogs, getCatigories } from '../Services/Api';
-import { fetchFavorites, toggleFavorite } from '../Services/Api';
+import { getBlogs, getCatigories, fetchFavorites, toggleFavorite } from '../Services/API';
 import { Link } from 'react-router-dom';
 
 export default function Blogs() {
   const [blogs, setBlogs] = useState([]);
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('');
-
-  //const [dateRange, setDateRange] = useState('');
   const [favorites, setFavorites] = useState(new Set());
-
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(0);
-  const itemsPerPage = 6; // Number of blogs per page
-
+  const itemsPerPage = 6;
 
   const userId = 1; // Replace with the actual logged-in user ID
-
-  // Fetch categories on mount
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -37,7 +30,7 @@ export default function Blogs() {
     const fetchBlogs = async () => {
       setLoading(true);
       try {
-        const filters = { category: selectedCategory }; // Updated filter parameter
+        const filters = { category: selectedCategory };
         const fetchedBlogs = await getBlogs(filters);
         setBlogs(fetchedBlogs || []);
       } catch (err) {
@@ -48,78 +41,71 @@ export default function Blogs() {
     };
     fetchBlogs();
   }, [selectedCategory]);
-// Fetch user's favorite blogs on mount
-useEffect(() => {
-  const fetchUserFavorites = async () => {
+
+  useEffect(() => {
+    const fetchUserFavorites = async () => {
+      try {
+        const userFavorites = await fetchFavorites(userId);
+        setFavorites(new Set(userFavorites));
+      } catch (error) {
+        console.error("Error fetching user favorites:", error);
+      }
+    };
+    fetchUserFavorites();
+  }, [userId]);
+
+  const handleToggleFavorite = async (blogId) => {
+    const isFavorite = favorites.has(blogId);
     try {
-      const userFavorites = await fetchFavorites(userId);
-      setFavorites(userFavorites);
+      await toggleFavorite(userId, blogId, isFavorite);
+      setFavorites((prevFavorites) => {
+        const updatedFavorites = new Set(prevFavorites);
+        if (isFavorite) {
+          updatedFavorites.delete(blogId);
+        } else {
+          updatedFavorites.add(blogId);
+        }
+        return updatedFavorites;
+      });
     } catch (error) {
-      console.error("Error fetching user favorites:", error);
+      console.error("Error toggling favorite:", error);
     }
   };
-  fetchUserFavorites();
-}, [userId]);
 
-// Handle toggling of favorite blogs
-const handleToggleFavorite = async (blogId) => {
-  const isFavorite = favorites.has(blogId);
-  try {
-    await toggleFavorite(userId, blogId, isFavorite);
-    setFavorites((prevFavorites) => {
-      const updatedFavorites = new Set(prevFavorites);
-      if (isFavorite) {
-        updatedFavorites.delete(blogId);
-      } else {
-        updatedFavorites.add(blogId);
-      }
-      return updatedFavorites;
-    });
-  } catch (error) {
-    console.error("Error toggling favorite:", error);
-  }
-};
+  const handleCategoryClick = (categoryId) => {
+    setSelectedCategory(categoryId);
+    setCurrentPage(0);
+  };
 
-// Handle category click and pagination reset
-const handleCategoryClick = (categoryId) => {
-  setSelectedCategory(categoryId);
-  setCurrentPage(0); // Reset to the first page when filter changes
-};
+  const offset = currentPage * itemsPerPage;
+  const currentItems = blogs.slice(offset, offset + itemsPerPage);
+  const pageCount = Math.ceil(blogs.length / itemsPerPage);
 
-// Pagination logic
-const offset = currentPage * itemsPerPage;
-const currentItems = blogs.slice(offset, offset + itemsPerPage);
-const pageCount = Math.ceil(blogs.length / itemsPerPage);
+  const handlePageClick = ({ selected }) => {
+    setCurrentPage(selected);
+  };
 
-const handlePageClick = ({ selected }) => {
-  setCurrentPage(selected);
-};
-
-// Preloader for loading state
-if (loading) {
-  return (
-    <div className="preloader" id="preloader">
-      <div className="preloader-inner">
-        <div className="spinner">
-          <div className="dot1"></div>
-          <div className="dot2"></div>
+  if (loading) {
+    return (
+      <div className="preloader" id="preloader">
+        <div className="preloader-inner">
+          <div className="spinner">
+            <div className="dot1"></div>
+            <div className="dot2"></div>
+          </div>
         </div>
       </div>
-    </div>
-  );
-}
+    );
+  }
 
   return (
     <section className="blog-post-area section-margin">
       <div className="container">
         <div className="row">
           <div className="col-lg-8">
-            {loading ? (
-              <p>Loading...</p>
-            ) : (
-
+            <>
               <div className="row">
-                {blogs.map((blog) => (
+                {currentItems.map((blog) => (
                   <div key={blog.id} className="col-lg-6 col-md-6 col-sm-12 mb-4">
                     <div className="single-post-wrap style-box border rounded-lg overflow-hidden shadow-lg">
                       <div className="thumb">
@@ -141,17 +127,15 @@ if (loading) {
                             marginLeft: "10px",
                             fontSize: "24px",
                             position: "absolute",
-                            top:"10px",
-                            right:"10px",
-                            zIndex:3
-
+                            top: "10px",
+                            right: "10px",
+                            zIndex: 3,
                           }}
                           onClick={() => handleToggleFavorite(blog.id)}
                         />
                       </div>
 
                       <div className="details p-4">
-                        {/* Post Meta */}
                         <div className="post-meta-single mb-3">
                           <ul className="d-flex list-unstyled">
                             <li className="me-3">
@@ -171,39 +155,34 @@ if (loading) {
                           </ul>
                         </div>
 
-                        {/* Title */}
                         <h5 className="title mb-3" style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", width: "100%" }}>
                           <Link to={`/blog/${blog.id}`} style={{ color: "#2d3e50", fontWeight: "bold" }}>
                             {blog.title}
                           </Link>
                         </h5>
 
-                        {/* Excerpt */}
                         <p className="mb-3" style={{ fontSize: "0.9rem", color: "#6c757d" }}>
                           {blog.short_description ? blog.short_description : "Short description not available."}
                         </p>
 
-                        {/* Read More Button */}
                         <Link to={`/blog/${blog.id}`} className="btn btn-blue me-2">Read More</Link>
-
                       </div>
                     </div>
-                  ))}
-                </div>
-                <ReactPaginate
-    previousLabel={"previous"}
-    nextLabel={"next"}
-    breakLabel={"..."}
-    pageCount={pageCount}
-    marginPagesDisplayed={2}
-    pageRangeDisplayed={5}
-    onPageChange={handlePageClick}
-    containerClassName={"pagination pagination-margin"}
-    activeClassName={"active"}
-/>
-
+                  </div>
+                ))}
               </div>
-            )}
+              <ReactPaginate
+                previousLabel={"previous"}
+                nextLabel={"next"}
+                breakLabel={"..."}
+                pageCount={pageCount}
+                marginPagesDisplayed={2}
+                pageRangeDisplayed={5}
+                onPageChange={handlePageClick}
+                containerClassName={"pagination pagination-margin"}
+                activeClassName={"active"}
+              />
+            </>
           </div>
           <div className="col-lg-4 sidebar-widgets" style={{ position: 'relative' }}>
             <div className="widget-wrap" style={{ padding: '20px', backgroundColor: '#ffffff', borderRadius: '10px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', position: 'sticky', left: '0', top: '0' }}>
@@ -212,12 +191,11 @@ if (loading) {
                   Category
                 </h4>
                 <ul className="cat-list mt-20" style={{ listStyle: 'none', padding: 0, color: '#555' }}>
-                <li >
-                      <button onClick={() => handleCategoryClick('')} className="d-flex justify-content-between" style={{ textDecoration: 'none', color: '#1e2229', fontWeight: '500', transition: 'color 0.3s', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>
-                        <p>All Articles</p>
-                     
-                      </button>
-                    </li>
+                  <li>
+                    <button onClick={() => handleCategoryClick('')} className="d-flex justify-content-between" style={{ textDecoration: 'none', color: '#1e2229', fontWeight: '500', transition: 'color 0.3s', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>
+                      <p>All Articles</p>
+                    </button>
+                  </li>
                   {categories.map((category) => (
                     <li key={category.id} style={{ marginBottom: '10px' }}>
                       <button onClick={() => handleCategoryClick(category.id)} className="d-flex justify-content-between" style={{ textDecoration: 'none', color: '#1e2229', fontWeight: '500', transition: 'color 0.3s', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>
