@@ -15,8 +15,7 @@ class BlogController extends Controller
 {
     /**
      * Display a listing of the resource.
-     */
-  public function index(Request $request)
+     */public function index(Request $request)
 {
     // Retrieve the category_id from the request
     $categoryId = $request->query('category');
@@ -32,6 +31,7 @@ class BlogController extends Controller
     // Return the filtered blogs (or all if no filter is applied) as JSON
     return response()->json($blogs);
 }
+
     
 
 
@@ -95,11 +95,12 @@ class BlogController extends Controller
      public function update(Request $request, $id)
      {
          // Validate the incoming data
+        //  Log::info('Update Request Data: ', ['data' => $request->all]);
          $validatedData = $request->validate([
-             'title' => 'nullable|string|max:255', // title is optional now
-             'article' => 'nullable|string', // article is optional now
-             'category_id' => 'nullable|integer', // category_id is optional now
-             'image' => 'nullable|string', // Validate the image as a URL if provided
+             'title' => 'nullable|string|max:255', 
+             'article' => 'nullable|string',
+             'category_id' => 'nullable|integer',
+             'image' => 'nullable|string', 
          ]);
      
          // Find the blog by ID
