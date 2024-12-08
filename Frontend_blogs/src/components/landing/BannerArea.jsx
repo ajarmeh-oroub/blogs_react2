@@ -26,12 +26,12 @@ export default function BannerArea({data, loading, error}) {
               <ul>
                 <li>
                   <a className="tag-base tag-blue" href="#">
-                    {blog.category_id}
+                    {blog.category.name}
                   </a>
                 </li>
                 <li className="date">
                   <i className="fa fa-clock-o" />
-                  {blog.created_at}
+                  {(new Date(blog.created_at)).getDay()}.{(new Date(blog.created_at)).getMonth()}.{(new Date(blog.created_at)).getFullYear()}
                 </li>
               </ul>
             </div>
@@ -52,7 +52,7 @@ export default function BannerArea({data, loading, error}) {
       <div className="single-post-wrap style-white">
         <div className="thumb">
           <img src={blog.image} alt="img" style={{height:"200px", width: "450px"}}/>
-          <a className="tag-base tag-blue" href="#">{blog.category_id}</a>
+          <a className="tag-base tag-blue" href="#">{blog.category.name}</a>
         </div>
         <div className="details">
           <h6 className="title">
@@ -64,7 +64,7 @@ export default function BannerArea({data, loading, error}) {
             <ul>
               <li>
                 <i className="fa fa-clock-o" />
-                {blog.created_at}
+                {(new Date(blog.created_at)).getDay()}.{(new Date(blog.created_at)).getMonth()}.{(new Date(blog.created_at)).getFullYear()}
               </li>
             </ul>
           </div>
