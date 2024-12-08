@@ -9,13 +9,13 @@ export default function PostGrid({ grid }) {
         <div className="thumb">
           <img src={blog.image} alt="img" style={{height: "266px", width: "100%"}}
           className="img-fluid"/>
-          <a className="tag-base tag-purple" href="#">{blog.category_id}</a>
+          <a className="tag-base tag-purple" href="#">{blog.category.name}</a>
         </div>
         <div className="details">
           <div className="post-meta-single">
             <p>
               <i className="fa fa-clock-o" />
-              {blog.created_at}
+              {(new Date(blog.created_at)).getDay()}.{(new Date(blog.created_at)).getMonth()}.{(new Date(blog.created_at)).getFullYear()}
             </p>
           </div>
           <h6 className="title">
