@@ -1,1 +1,1 @@
-# blogs_react2
+# blogs_react

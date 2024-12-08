@@ -1,403 +1,67 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react';
 
-export default function FavoritePage() {
+const FavoriteBlogs = () => {
+  const [favoriteBlogs, setFavoriteBlogs] = useState([]);
+
+  useEffect(() => {
+    // Fetch favorite blogs using the userID (Example API endpoint)
+    fetch(`http://127.0.0.1:8000/api/user/1/favorites`)
+      .then(response => response.json())
+      .then(data => {
+        // Ensure that the data is an array
+        if (Array.isArray(data.favoriteBlogs)) {
+          setFavoriteBlogs(data.favoriteBlogs);
+        } else {
+          console.error('Expected an array of blogs, but got:', data);
+        }
+      })
+      .catch(error => console.error('Error fetching favorite blogs:', error));
+  });
+
   return (
     <section className="blog-post-area section-margin">
-    <div className="container">
-      <div className="row">
-        <div className="col-lg-8">
-          <div className="row">
-            <div className="col-md-6">
-              <div className="single-recent-blog-post card-view">
-                <div className="thumb">
-                  <img
-                    className="card-img rounded-0"
-                    src="img/blog/thumb/thumb-card1.png"
-                    alt=""
-                  />
-                  <ul className="thumb-info">
-                    <li>
-                      <a href="#">
-                        <i className="ti-user" />
-                        Admin
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#">
-                        <i className="ti-themify-favicon" />2 Comments
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-                <div className="details mt-20">
-                  <a href="blog-single.html">
-                    <h3>
-                      Fast cars and rickety bridges as he grand tour returns
-                    </h3>
-                  </a>
-                  <p>
-                    Vel aliquam quis, nulla pede mi commodo no tristique nam hac
-                    luctus torquent velit felis lone commodo pellentesque
-                  </p>
-                  <a className="btn btn-blue" href="#">
-                    Read More <i className="ti-arrow-right" />
-                  </a>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-6">
-              <div className="single-recent-blog-post card-view">
-                <div className="thumb">
-                  <img
-                    className="card-img rounded-0"
-                    src="img/blog/thumb/thumb-card2.png"
-                    alt=""
-                  />
-                  <ul className="thumb-info">
-                    <li>
-                      <a href="#">
-                        <i className="ti-user" />
-                        Admin
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#">
-                        <i className="ti-themify-favicon" />2 Comments
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-                <div className="details mt-20">
-                  <a href="blog-single.html">
-                    <h3>Harvey Weinstein's senual assault trial set for May</h3>
-                  </a>
-                  <p>
-                    Vel aliquam quis, nulla pede mi commodo no tristique nam hac
-                    luctus torquent velit felis lone commodo pellentesque
-                  </p>
-                  <a className="btn btn-blue" href="#">
-                    Read More <i className="ti-arrow-right" />
-                  </a>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-6">
-              <div className="single-recent-blog-post card-view">
-                <div className="thumb">
-                  <img
-                    className="card-img rounded-0"
-                    src="img/blog/thumb/thumb-card3.png"
-                    alt=""
-                  />
-                  <ul className="thumb-info">
-                    <li>
-                      <a href="#">
-                        <i className="ti-user" />
-                        Admin
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#">
-                        <i className="ti-themify-favicon" />2 Comments
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-                <div className="details mt-20">
-                  <a href="blog-single.html">
-                    <h3>
-                      Fast cars and rickety bridges as he grand tour returns
-                    </h3>
-                  </a>
-                  <p>
-                    Vel aliquam quis, nulla pede mi commodo no tristique nam hac
-                    luctus torquent velit felis lone commodo pellentesque
-                  </p>
-                  <a className="btn btn-blue" href="#">
-                    Read More <i className="ti-arrow-right" />
-                  </a>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-6">
-              <div className="single-recent-blog-post card-view">
-                <div className="thumb">
-                  <img
-                    className="card-img rounded-0"
-                    src="img/blog/thumb/thumb-card4.png"
-                    alt=""
-                  />
-                  <ul className="thumb-info">
-                    <li>
-                      <a href="#">
-                        <i className="ti-user" />
-                        Admin
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#">
-                        <i className="ti-themify-favicon" />2 Comments
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-                <div className="details mt-20">
-                  <a href="blog-single.html">
-                    <h3>Harvey Weinstein's senual assault trial set for May</h3>
-                  </a>
-                  <p>
-                    Vel aliquam quis, nulla pede mi commodo no tristique nam hac
-                    luctus torquent velit felis lone commodo pellentesque
-                  </p>
-                  <a className="btn btn-blue" href="#">
-                    Read More <i className="ti-arrow-right" />
-                  </a>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-6">
-              <div className="single-recent-blog-post card-view">
-                <div className="thumb">
-                  <img
-                    className="card-img rounded-0"
-                    src="img/blog/thumb/thumb-card5.png"
-                    alt=""
-                  />
-                  <ul className="thumb-info">
-                    <li>
-                      <a href="#">
-                        <i className="ti-user" />
-                        Admin
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#">
-                        <i className="ti-themify-favicon" />2 Comments
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-                <div className="details mt-20">
-                  <a href="blog-single.html">
-                    <h3>
-                      Fast cars and rickety bridges as he grand tour returns
-                    </h3>
-                  </a>
-                  <p>
-                    Vel aliquam quis, nulla pede mi commodo no tristique nam hac
-                    luctus torquent velit felis lone commodo pellentesque
-                  </p>
-                  <a className="btn btn-blue" href="#">
-                    Read More <i className="ti-arrow-right" />
-                  </a>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-6">
-              <div className="single-recent-blog-post card-view">
-                <div className="thumb">
-                  <img
-                    className="card-img rounded-0"
-                    src="img/blog/thumb/thumb-card6.png"
-                    alt=""
-                  />
-                  <ul className="thumb-info">
-                    <li>
-                      <a href="#">
-                        <i className="ti-user" />
-                        Admin
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#">
-                        <i className="ti-themify-favicon" />2 Comments
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-                <div className="details mt-20">
-                  <a href="blog-single.html">
-                    <h3>Harvey Weinstein's senual assault trial set for May</h3>
-                  </a>
-                  <p>
-                    Vel aliquam quis, nulla pede mi commodo no tristique nam hac
-                    luctus torquent velit felis lone commodo pellentesque
-                  </p>
-                  <a className="btn btn-blue" href="#">
-                    Read More <i className="ti-arrow-right" />
-                  </a>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-6">
-              <div className="single-recent-blog-post card-view">
-                <div className="thumb">
-                  <img
-                    className="card-img rounded-0"
-                    src="img/blog/thumb/thumb-card7.png"
-                    alt=""
-                  />
-                  <ul className="thumb-info">
-                    <li>
-                      <a href="#">
-                        <i className="ti-user" />
-                        Admin
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#">
-                        <i className="ti-themify-favicon" />2 Comments
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-                <div className="details mt-20">
-                  <a href="blog-single.html">
-                    <h3>
-                      Fast cars and rickety bridges as he grand tour returns
-                    </h3>
-                  </a>
-                  <p>
-                    Vel aliquam quis, nulla pede mi commodo no tristique nam hac
-                    luctus torquent velit felis lone commodo pellentesque
-                  </p>
-                  <a className="btn btn-blue" href="#">
-                    Read More <i className="ti-arrow-right" />
-                  </a>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-6">
-              <div className="single-recent-blog-post card-view">
-                <div className="thumb">
-                  <img
-                    className="card-img rounded-0"
-                    src="img/blog/thumb/thumb-card8.png"
-                    alt=""
-                  />
-                  <ul className="thumb-info">
-                    <li>
-                      <a href="#">
-                        <i className="ti-user" />
-                        Admin
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#">
-                        <i className="ti-themify-favicon" />2 Comments
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-                <div className="details mt-20">
-                  <a href="blog-single.html">
-                    <h3>Harvey Weinstein's senual assault trial set for May</h3>
-                  </a>
-                  <p>
-                    Vel aliquam quis, nulla pede mi commodo no tristique nam hac
-                    luctus torquent velit felis lone commodo pellentesque
-                  </p>
-                  <a className="btn btn-blue" href="#">
-                    Read More <i className="ti-arrow-right" />
-                  </a>
-                </div>
-              </div>
+      <div className="container">
+        <div className="row">
+          <div className="col-lg-8">
+            <div className="row">
+              {/* Map over the favorite blogs and display each one */}
+              {favoriteBlogs.length > 0 ? (
+                favoriteBlogs.map((blog) => (
+                  <div className="col-md-6" key={blog.id}>
+                    <div className="single-recent-blog-post card-view">
+                      <div className="thumb">
+                        <img
+                          className="card-img rounded-0"
+                          src={blog.image || "img/blog/thumb/thumb-card8.png"}
+                          alt={blog.title}
+                        />
+                        {/* <ul className="thumb-info">
+                          <li>
+                            <a href="#"><i className="ti-user"></i>{blog.user.first_name} {blog.user.last_name}</a>
+                          </li>
+                          <li>
+                            <a href="#"><i className="ti-themify-favicon"></i>{blog.commentsCount} Comments</a>
+                          </li>
+                        </ul> */}
+                      </div>
+                      <div className="details mt-20">
+                        <a href={`/blog/${blog.id}`}><h3>{blog.title}</h3></a>
+                        <p>{blog.description}</p>
+                        <a className="btn btn-blue" href={`/blog/${blog.id}`}>
+                          Read More <i className="ti-arrow-right"></i>
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <p>No favorite blogs available</p>
+              )}
             </div>
           </div>
-          {/* <div class="single-recent-blog-post">
-        <div class="thumb">
-          <img class="img-fluid" src="img/blog/blog2.png" alt="">
-          <ul class="thumb-info">
-            <li><a href="#"><i class="ti-user"></i>Admin</a></li>
-            <li><a href="#"><i class="ti-notepad"></i>January 12,2019</a></li>
-            <li><a href="#"><i class="ti-themify-favicon"></i>2 Comments</a></li>
-          </ul>
-        </div>
-        <div class="details mt-20">
-          <a href="blog-single.html">
-            <h3>Woman claims husband wants to name baby girl
-              after his ex-lover sparking.</h3>
-          </a>
-          <p class="tag-list-inline">Tag: <a href="#">travel</a>, <a href="#">life style</a>, <a href="#">technology</a>, <a href="#">fashion</a></p>
-          <p>Over yielding doesn't so moved green saw meat hath fish he him from given yielding lesser cattle were fruitful lights. Given let have, lesser their made him above gathered dominion sixth. Creeping deep said can't called second. Air created seed heaven sixth created living</p>
-          <a class="button" href="#">Read More <i class="ti-arrow-right"></i></a>
-        </div>
-      </div>
-  
-      <div class="single-recent-blog-post">
-        <div class="thumb">
-          <img class="img-fluid" src="img/blog/blog3.png" alt="">
-          <ul class="thumb-info">
-            <li><a href="#"><i class="ti-user"></i>Admin</a></li>
-            <li><a href="#"><i class="ti-notepad"></i>January 12,2019</a></li>
-            <li><a href="#"><i class="ti-themify-favicon"></i>2 Comments</a></li>
-          </ul>
-        </div>
-        <div class="details mt-20">
-          <a href="blog-single.html">
-            <h3>Tourist deaths in Costa Rica jeopardize safe dest
-              ination reputation all time. </h3>
-          </a>
-          <p class="tag-list-inline">Tag: <a href="#">travel</a>, <a href="#">life style</a>, <a href="#">technology</a>, <a href="#">fashion</a></p>
-          <p>Over yielding doesn't so moved green saw meat hath fish he him from given yielding lesser cattle were fruitful lights. Given let have, lesser their made him above gathered dominion sixth. Creeping deep said can't called second. Air created seed heaven sixth created living</p>
-          <a class="button" href="#">Read More <i class="ti-arrow-right"></i></a>
-        </div>
-      </div>
-  
-      <div class="single-recent-blog-post">
-        <div class="thumb">
-          <img class="img-fluid" src="img/blog/blog4.png" alt="">
-          <ul class="thumb-info">
-            <li><a href="#"><i class="ti-user"></i>Admin</a></li>
-            <li><a href="#"><i class="ti-notepad"></i>January 12,2019</a></li>
-            <li><a href="#"><i class="ti-themify-favicon"></i>2 Comments</a></li>
-          </ul>
-        </div>
-        <div class="details mt-20">
-          <a href="blog-single.html">
-            <h3>Tourist deaths in Costa Rica jeopardize safe dest
-              ination reputation all time.  </h3>
-          </a>
-          <p class="tag-list-inline">Tag: <a href="#">travel</a>, <a href="#">life style</a>, <a href="#">technology</a>, <a href="#">fashion</a></p>
-          <p>Over yielding doesn't so moved green saw meat hath fish he him from given yielding lesser cattle were fruitful lights. Given let have, lesser their made him above gathered dominion sixth. Creeping deep said can't called second. Air created seed heaven sixth created living</p>
-          <a class="button" href="#">Read More <i class="ti-arrow-right"></i></a>
-        </div>
-      </div> */}
-          <div className="row">
-            <div className="col-lg-12">
-              <nav className="blog-pagination justify-content-center d-flex">
-                <ul className="pagination">
-                  <li className="page-item">
-                    <a href="#" className="page-link" aria-label="Previous">
-                      <span aria-hidden="true">
-                        <i className="ti-angle-left" />
-                      </span>
-                    </a>
-                  </li>
-                  <li className="page-item active">
-                    <a href="#" className="page-link">
-                      1
-                    </a>
-                  </li>
-                  <li className="page-item">
-                    <a href="#" className="page-link">
-                      2
-                    </a>
-                  </li>
-                  <li className="page-item">
-                    <a href="#" className="page-link" aria-label="Next">
-                      <span aria-hidden="true">
-                        <i className="ti-angle-right" />
-                      </span>
-                    </a>
-                  </li>
-                </ul>
-              </nav>
-            </div>
-          </div>
-        </div>
-        {/* Start Blog Post Siddebar */}
-        <div className="col-lg-4 sidebar-widgets">
+
+          {/* Sidebar (optional) */}
+          <div className="col-lg-4 sidebar-widgets">
           <div className="widget-wrap">
         
             <div className="single-sidebar-widget post-category-widget">
@@ -539,10 +203,10 @@ export default function FavoritePage() {
             </div>
           </div>
         </div>
+        </div>
       </div>
-      {/* End Blog Post Siddebar */}
-    </div>
-  </section>
-  
-  )
-}
+    </section>
+  );
+};
+
+export default FavoriteBlogs;

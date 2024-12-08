@@ -20,8 +20,6 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
-        'about',
-        'address',
         'password',
     ];
 
@@ -46,11 +44,7 @@ class User extends Authenticatable
 
 
 
-    function blog_favorite(){
-        return $this->belongsToMany(Blog::class);
-    }
-
-      function blog(){
-        return $this->hasMany(Blog::class);
+    function blog_favorites(){
+        return $this->belongsToMany(Blog::class)->withTimestamps();;
     }
 }
