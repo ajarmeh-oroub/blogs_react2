@@ -25,7 +25,7 @@ export default function PostTrending({ trends, latest }) {
                 <a href="#">{trend.title}</a>
               </Link>
             </h6>
-            <p>{trend.article}</p>
+            <p>{trend.short_description}</p>
           </div>
         </div>
       </div>
