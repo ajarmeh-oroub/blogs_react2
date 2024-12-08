@@ -56,28 +56,7 @@ export default function BannerArea({ data, favorites, toggleFavorite }) {
           </div>
         </div>
       </div>
-      <div className="col-lg-6 align-self-center">
-        <div className="banner-details mt-4 mt-lg-0">
-          <div className="post-meta-single">
-            <ul>
-              <li>
-                <a className="tag-base tag-blue" href="#">
-                  {blog.category.name}
-                </a>
-              </li>
-              <li className="date">
-                <i className="fa fa-clock-o" />
-                {new Date(blog.created_at).toLocaleDateString()}
-              </li>
-            </ul>
-          </div>
-          <h2>{blog.title}</h2>
-          <p>{blog.short_description}</p>
-          <Link to={`/blog/${blog.id}`} className="btn btn-base">
-            Read More
-          </Link>
-        </div>
-      </div>
+     
     </React.Fragment>
   ));
 

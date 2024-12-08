@@ -148,11 +148,11 @@ export default function BlogDetails() {
               <img className="img-fluid" src={blog.image} alt={blog.title} />
               <h4>{blog.title}</h4>
               <div className="user_details">
-                <div className="float-left">{blog.categories}</div>
+                <div className="float-left">{blog.category.name}</div>
                 <div className="float-right mt-sm-0 mt-3">
                   <div className="media">
                     <div className="media-body">
-                      <h5>{blog.user.name}</h5>
+                      <h5>{blog.user ? blog.user.name : "Unknown"}</h5>
                       <p>{new Date(blog.created_at).toLocaleString()}</p>
                     </div>
                     <div className="d-flex">
