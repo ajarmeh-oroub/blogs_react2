@@ -1,15 +1,25 @@
 import React, { useEffect, useState } from 'react';
 import ReactPaginate from 'react-paginate';
 import { getBlogs, getCatigories } from '../Services/Api';
+import { fetchFavorites, toggleFavorite } from '../Services/Api';
 import { Link } from 'react-router-dom';
 
 export default function Blogs() {
   const [blogs, setBlogs] = useState([]);
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('');
+
+  //const [dateRange, setDateRange] = useState('');
+  const [favorites, setFavorites] = useState(new Set());
+
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 6; // Number of blogs per page
+
+
+  const userId = 1; // Replace with the actual logged-in user ID
+
+  // Fetch categories on mount
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -38,29 +48,67 @@ export default function Blogs() {
     };
     fetchBlogs();
   }, [selectedCategory]);
-
-  const handleCategoryClick = (categoryId) => {
-    setSelectedCategory(categoryId);
-    setCurrentPage(0); // Reset to the first page when filter changes
+// Fetch user's favorite blogs on mount
+useEffect(() => {
+  const fetchUserFavorites = async () => {
+    try {
+      const userFavorites = await fetchFavorites(userId);
+      setFavorites(userFavorites);
+    } catch (error) {
+      console.error("Error fetching user favorites:", error);
+    }
   };
+  fetchUserFavorites();
+}, [userId]);
 
-  const offset = currentPage * itemsPerPage;
-  const currentItems = blogs.slice(offset, offset + itemsPerPage);
-  const pageCount = Math.ceil(blogs.length / itemsPerPage);
+// Handle toggling of favorite blogs
+const handleToggleFavorite = async (blogId) => {
+  const isFavorite = favorites.has(blogId);
+  try {
+    await toggleFavorite(userId, blogId, isFavorite);
+    setFavorites((prevFavorites) => {
+      const updatedFavorites = new Set(prevFavorites);
+      if (isFavorite) {
+        updatedFavorites.delete(blogId);
+      } else {
+        updatedFavorites.add(blogId);
+      }
+      return updatedFavorites;
+    });
+  } catch (error) {
+    console.error("Error toggling favorite:", error);
+  }
+};
 
-  const handlePageClick = ({ selected }) => {
-    setCurrentPage(selected);
-  };
-  if (loading) return (
+// Handle category click and pagination reset
+const handleCategoryClick = (categoryId) => {
+  setSelectedCategory(categoryId);
+  setCurrentPage(0); // Reset to the first page when filter changes
+};
+
+// Pagination logic
+const offset = currentPage * itemsPerPage;
+const currentItems = blogs.slice(offset, offset + itemsPerPage);
+const pageCount = Math.ceil(blogs.length / itemsPerPage);
+
+const handlePageClick = ({ selected }) => {
+  setCurrentPage(selected);
+};
+
+// Preloader for loading state
+if (loading) {
+  return (
     <div className="preloader" id="preloader">
-        <div className="preloader-inner">
-            <div className="spinner">
-                <div className="dot1"></div>
-                <div className="dot2"></div>
-            </div>
+      <div className="preloader-inner">
+        <div className="spinner">
+          <div className="dot1"></div>
+          <div className="dot2"></div>
         </div>
+      </div>
     </div>
   );
+}
+
   return (
     <section className="blog-post-area section-margin">
       <div className="container">
@@ -69,50 +117,75 @@ export default function Blogs() {
             {loading ? (
               <p>Loading...</p>
             ) : (
-              <div>
-                <div className="row">
-                  {currentItems.map((blog) => (
-                    <div key={blog.id} className="col-lg-6 col-md-6 col-sm-12 mb-4">
-                      <div className="single-post-wrap style-box border rounded-lg overflow-hidden shadow-lg">
-                        <div className="thumb">
-                          <img
-                            className="card-img rounded-0 img-fluid"
-                            style={{
-                              height: "250px",
-                              width: "100%",
-                              objectFit: "cover",
-                            }}
-                            src={`${blog.image}`}
-                            alt={blog.title || "Blog Thumbnail"}
-                          />
+
+              <div className="row">
+                {blogs.map((blog) => (
+                  <div key={blog.id} className="col-lg-6 col-md-6 col-sm-12 mb-4">
+                    <div className="single-post-wrap style-box border rounded-lg overflow-hidden shadow-lg">
+                      <div className="thumb">
+                        <img
+                          className="card-img rounded-0 img-fluid"
+                          style={{
+                            height: "250px",
+                            width: "100%",
+                            objectFit: "cover",
+                          }}
+                          src={`${blog.image}`}
+                          alt={blog.title || "Blog Thumbnail"}
+                        />
+                        <i
+                          className={`fa fa-heart`}
+                          style={{
+                            color: favorites.has(blog.id) ? "red" : "white",
+                            cursor: "pointer",
+                            marginLeft: "10px",
+                            fontSize: "24px",
+                            position: "absolute",
+                            top:"10px",
+                            right:"10px",
+                            zIndex:3
+
+                          }}
+                          onClick={() => handleToggleFavorite(blog.id)}
+                        />
+                      </div>
+
+                      <div className="details p-4">
+                        {/* Post Meta */}
+                        <div className="post-meta-single mb-3">
+                          <ul className="d-flex list-unstyled">
+                            <li className="me-3">
+                              <i className="fa fa-user" />
+                              {blog.user
+                                ? `${blog.user.first_name} ${blog.user.last_name}`
+                                : "Anonymous"}
+                            </li>
+                            <li className="me-3">
+                              <i className="fa fa-calendar" />
+                              {new Date(blog.created_at).toLocaleDateString()}
+                            </li>
+                            <li>
+                              <i className="fa fa-comments" />
+                              Comments ({blog.comments ? blog.comments.length : "0"})
+                            </li>
+                          </ul>
                         </div>
-                        <div className="details p-4">
-                          <div className="post-meta-single mb-3">
-                            <ul className="d-flex list-unstyled">
-                              <li className="me-3">
-                                <i className="fa fa-user" />
-                                {blog.user ? `${blog.user.first_name} ${blog.user.last_name}` : "Anonymous"}
-                              </li>
-                              <li className="me-3">
-                                <i className="fa fa-calendar" />
-                                {new Date(blog.created_at).toLocaleDateString()}
-                              </li>
-                              <li>
-                                <i className="fa fa-comments" />
-                                Comments ({blog.comments ? blog.comments.length : "0"})
-                              </li>
-                            </ul>
-                          </div>
-                          <h5 className="title mb-3" style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", width: "100%" }}>
-                            <Link to={`/blog/${blog.id}`} style={{ color: "#2d3e50", fontWeight: "bold" }}>
-                              {blog.title}
-                            </Link>
-                          </h5>
-                          <p className="mb-3" style={{ fontSize: "0.9rem", color: "#6c757d" }}>
-                            {blog.short_description ? blog.short_description : "Short description not available."}
-                          </p>
-                          <Link to={`/blog/${blog.id}`} className="btn btn-blue">Read More</Link>
-                        </div>
+
+                        {/* Title */}
+                        <h5 className="title mb-3" style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", width: "100%" }}>
+                          <Link to={`/blog/${blog.id}`} style={{ color: "#2d3e50", fontWeight: "bold" }}>
+                            {blog.title}
+                          </Link>
+                        </h5>
+
+                        {/* Excerpt */}
+                        <p className="mb-3" style={{ fontSize: "0.9rem", color: "#6c757d" }}>
+                          {blog.short_description ? blog.short_description : "Short description not available."}
+                        </p>
+
+                        {/* Read More Button */}
+                        <Link to={`/blog/${blog.id}`} className="btn btn-blue me-2">Read More</Link>
+
                       </div>
                     </div>
                   ))}
