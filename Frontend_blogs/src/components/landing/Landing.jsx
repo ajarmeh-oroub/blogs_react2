@@ -1,29 +1,25 @@
-import React from 'react'
-import BannerArea from './BannerArea'
-import PostGrid from './PostGrid'
-import PostLatest from './PostLatest'
-import PostTrending from './PostTrending'
-import { useEffect, useState } from "react";
-
-
+import React, { useEffect, useState } from 'react';
+import BannerArea from './BannerArea';
+import PostGrid from './PostGrid';
+import PostTrending from './PostTrending';
+import { fetchHomeData, fetchFavorites, toggleFavorite as toggleFavoriteApi } from '../../Services/Api.jsx';
 
 export default function Landing() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [favorites, setFavorites] = useState(new Set()); // Set to manage favorites
+
+  const userId = 1; // Replace with the actual user ID
 
   useEffect(() => {
     const fetchData = async () => {
-      const url = "http://localhost:8000/api/home";
-
       try {
-        const response = await fetch(url);
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
+        const homeData = await fetchHomeData();
+        const favoriteIds = await fetchFavorites(userId);
 
-        const jsonData = await response.json();
-        setData(jsonData);
+        setData(homeData);
+        setFavorites(favoriteIds);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -34,6 +30,24 @@ export default function Landing() {
     fetchData();
   }, []);
 
+  const toggleFavorite = async (blogId) => {
+    try {
+      const isFavorite = favorites.has(blogId);
+      await toggleFavoriteApi(userId, blogId, isFavorite);
+
+      setFavorites((prev) => {
+        const updated = new Set(prev);
+        if (isFavorite) {
+          updated.delete(blogId);
+        } else {
+          updated.add(blogId);
+        }
+        return updated;
+      });
+    } catch (err) {
+      console.error("Error toggling favorite:", err.message);
+    }
+  };
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
@@ -41,15 +55,24 @@ export default function Landing() {
   const latest = data.latest.slice(1, 5);
   const grid = data.latest.slice(5, 13);
 
-
-
-
   return (
     <>
-      <BannerArea data={data.latest}/>
-      <PostTrending trends={data.trends} latest={latest}/>
-      {/* <PostLatest /> */}
-      <PostGrid grid={grid}/>
+      <BannerArea 
+        data={data.latest} 
+        favorites={favorites} 
+        toggleFavorite={toggleFavorite} 
+      />
+      <PostTrending 
+        trends={data.trends} 
+        latest={latest} 
+        favorites={favorites} 
+        toggleFavorite={toggleFavorite} 
+      />
+      <PostGrid 
+        grid={grid} 
+        favorites={favorites} 
+        toggleFavorite={toggleFavorite} 
+      />
     </>
-  )
+  );
 }

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { getBlogs, getCatigories } from '../Services/Api';
+import { fetchFavorites, toggleFavorite } from '../Services/Api';
 import { Link } from 'react-router-dom';
 
 export default function Blogs() {
@@ -7,7 +8,10 @@ export default function Blogs() {
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('');
   const [dateRange, setDateRange] = useState('');
+  const [favorites, setFavorites] = useState(new Set());
   const [loading, setLoading] = useState(true);
+
+  const userId = 1; // Replace with the actual logged-in user ID
 
   // Fetch categories on mount
   useEffect(() => {
@@ -39,14 +43,44 @@ export default function Blogs() {
     fetchBlogs();
   }, [selectedCategory, dateRange]);
 
+  // Fetch user's favorite blogs on mount
+  useEffect(() => {
+    const fetchUserFavorites = async () => {
+      try {
+        const userFavorites = await fetchFavorites(userId);
+        setFavorites(userFavorites);
+      } catch (error) {
+        console.error("Error fetching user favorites:", error);
+      }
+    };
+    fetchUserFavorites();
+  }, [userId]);
+
+  // Handle toggling of favorite blogs
+  const handleToggleFavorite = async (blogId) => {
+    const isFavorite = favorites.has(blogId);
+    try {
+      await toggleFavorite(userId, blogId, isFavorite);
+      setFavorites((prevFavorites) => {
+        const updatedFavorites = new Set(prevFavorites);
+        if (isFavorite) {
+          updatedFavorites.delete(blogId);
+        } else {
+          updatedFavorites.add(blogId);
+        }
+        return updatedFavorites;
+      });
+    } catch (error) {
+      console.error("Error toggling favorite:", error);
+    }
+  };
+
   return (
     <section className="blog-post-area section-margin">
       <div className="container">
         <div className="row">
           {/* Main content */}
           <div className="col-lg-8">
-           
-            {/* Display blogs */}
             {loading ? (
               <p>Loading...</p>
             ) : (
@@ -64,6 +98,21 @@ export default function Blogs() {
                           }}
                           src={`${blog.image}`}
                           alt={blog.title || "Blog Thumbnail"}
+                        />
+                        <i
+                          className={`fa fa-heart`}
+                          style={{
+                            color: favorites.has(blog.id) ? "red" : "white",
+                            cursor: "pointer",
+                            marginLeft: "10px",
+                            fontSize: "24px",
+                            position: "absolute",
+                            top:"10px",
+                            right:"10px",
+                            zIndex:3
+
+                          }}
+                          onClick={() => handleToggleFavorite(blog.id)}
                         />
                       </div>
 
@@ -101,7 +150,7 @@ export default function Blogs() {
                         </p>
 
                         {/* Read More Button */}
-                        <Link to={`/blog/${blog.id}`} className="btn btn-blue">Read More</Link>
+                        <Link to={`/blog/${blog.id}`} className="btn btn-blue me-2">Read More</Link>
                       </div>
                     </div>
                   </div>

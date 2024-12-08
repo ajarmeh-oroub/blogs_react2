@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-export default function PostTrending({ trends, latest }) {
+export default function PostTrending({ trends, latest,  data, favorites, toggleFavorite }) {
 
   const trendings = trends.map(function (trend) {
     return (
@@ -9,6 +9,20 @@ export default function PostTrending({ trends, latest }) {
         <div className="single-post-wrap">
           <div className="thumb">
             <img src={trend.image} alt="img" style={{height: "245px", width: "100%"}}/>
+            <i
+            className={`fa fa-heart`}
+            style={{
+              color: favorites.has(trend.id) ? "red" : "white",
+              cursor: "pointer",
+              marginLeft: "10px",
+              fontSize: "24px",
+              position: "absolute",
+              top:"10px",
+              right:"10px"
+
+            }}
+            onClick={() => toggleFavorite(trend.id)}
+          />
             <a className="tag-base tag-light-green">{trend.category.name}</a>
           </div>
           <div className="details">

@@ -152,6 +152,37 @@ return response.data
   }
 }
 
+export const fetchHomeData = async () => {
+  try {
+    const response = await axios.get(`${Api_base_url}home`);
+    return response.data;
+  } catch (error) {
+    throw new Error("Failed to fetch home data");
+  }
+};
+
+export const fetchFavorites = async (userId) => {
+  try {
+    const response = await axios.get(`${Api_base_url}favorites/${userId}`);
+    return new Set(response.data.favoriteBlogs.map((blog) => blog.id));
+  } catch (error) {
+    throw new Error("Failed to fetch favorites");
+  }
+};
+
+export const toggleFavorite = async (userId, blogId, isFavorite) => {
+  try {
+    if (isFavorite) {
+      await axios.delete(`${Api_base_url}favorites/${userId}/${blogId}`);
+    } else {
+      await axios.post(`${Api_base_url}favorites/${userId}/${blogId}`);
+    }
+  } catch (error) {
+    throw new Error("Failed to toggle favorite");
+  }
+};
+
+
 export default {
   getUserData,
   updateUserData,

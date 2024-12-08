@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-export default function PostGrid({ grid }) {
+export default function PostGrid({ grid, favorites, toggleFavorite}) {
   const gridBlogs = grid.map(function (blog) {
     return (
       <div className="col-lg-3 col-sm-6" key={blog.id}>
@@ -9,6 +9,21 @@ export default function PostGrid({ grid }) {
         <div className="thumb">
           <img src={blog.image} alt="img" style={{height: "266px", width: "100%"}}
           className="img-fluid"/>
+          <i
+                    className={`fa fa-heart`}
+                    style={{
+                      color: favorites.has(blog.id) ? "red" : "white",
+                      cursor: "pointer",
+                      marginLeft: "10px",
+                      fontSize: "24px",
+                      position: "absolute",
+                      top:"10px",
+                      right:"10px",
+                      zIndex:3
+
+                    }}
+                    onClick={() => toggleFavorite(blog.id)}
+                  />
           <a className="tag-base tag-purple" href="#">{blog.category.name}</a>
         </div>
         <div className="details">
