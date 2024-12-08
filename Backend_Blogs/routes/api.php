@@ -49,4 +49,4 @@ Route::post('/contact' , [ContactController::class , 'store']);
 Route::post('/favorites/{userId}/{blogId}', [BlogController::class, 'addToFavorite']);
 Route::delete('/favorites/{userId}/{blogId}', [BlogController::class, 'removeFromFavorite']);
 Route::get('/favorites/{userId}/{blogId}', [BlogController::class, 'isFavorited']);
-Route::get('/favorites/blogs', [BlogController::class, 'getFavoriteBlogs']);
+Route::get('/favorites/{userId}', [BlogController::class, 'getFavoriteBlogs']);
