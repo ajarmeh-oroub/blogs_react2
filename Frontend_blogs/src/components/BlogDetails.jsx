@@ -189,8 +189,8 @@ export default function BlogDetails() {
           </div>
 
           {/* Start Blog Post Sidebar */}
-          <div className="col-lg-4 sidebar-widgets">
-            <div className="widget-wrap" style={{ padding: '20px', backgroundColor: '#ffffff', borderRadius: '10px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}>
+          <div className="col-lg-4 sidebar-widgets" style={{position:'relative'}}>
+            <div className="widget-wrap" style={{ padding: '20px', backgroundColor: '#ffffff', borderRadius: '10px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' , position:'sticky',left:'0' , top:'0' ,  }}>
               <div className="single-sidebar-widget post-category-widget" style={{ marginBottom: '30px' }}>
                 <h4 className="single-sidebar-widget__title" style={{ fontSize: '18px', fontWeight: 'bold', color: '#1e2229', borderBottom: '2px solid #007BFF', paddingBottom: '10px' }}>
                   Category

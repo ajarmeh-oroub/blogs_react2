@@ -13,8 +13,7 @@ class BlogController extends Controller
 {
     /**
      * Display a listing of the resource.
-     */
-  public function index(Request $request)
+     */public function index(Request $request)
 {
     // Retrieve the category_id from the request
     $categoryId = $request->query('category');
@@ -30,6 +29,7 @@ class BlogController extends Controller
     // Return the filtered blogs (or all if no filter is applied) as JSON
     return response()->json($blogs);
 }
+
     
 
 

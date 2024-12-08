@@ -119,13 +119,11 @@ try{
 export const getBlogs = async (filters = {}) => {
   try {
     // Dynamically append filters to the URL
-    const { categoryId } = filters;
+    const { category } = filters; // Make sure the property name matches what you expect in the backend
     let url = `${Api_base_url}blog`;
 
-    if (categoryId) {
-      url += "?";
-      if (categoryId) url += `categoryId=${categoryId}&`;
-
+    if (category) {
+      url += `?category=${category}`;
     }
 
     const response = await axios.get(url);
