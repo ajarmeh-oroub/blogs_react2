@@ -50,14 +50,10 @@ export const createBlog = async (BlogDetails) => {
 
 //user update blog
 
-export const updateBlog = async (id, formData) => {
+export const updateBlog = async (id, blogDetails) => {
   try {
-    const response = await axios.put(`${Api_base_url}blog/${id}/update`, formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
-    console.log(formData);
+    const response = await axios.put(`${Api_base_url}blog/${id}/update`, blogDetails);
+    console.log(blogDetails);
     console.log('Response:', response.data);
     return response.data;
   } catch (e) {
