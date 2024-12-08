@@ -14,8 +14,8 @@ class Blog extends Model
         'image', 
         'title', 
         'article', 
-        'user_Id', 
-        'category_id', 
+        'user_id', 
+        'categories', 
         'likes', 
         'comments_count', 
         'short_description', 
@@ -25,16 +25,20 @@ class Blog extends Model
      
     public function user()
     {
-        return $this->belongsTo(User::class , 'user_id');
+        return $this->belongsTo(User::class);
     }
 
 
     function comments(){
-        return $this->hasMany(Comment::class ,'blogId');
+        return $this->hasMany(Comment::class);
     }
 
+    function users(){
+        return $this->belongsToMany(User::class)->withTimestamps();
+    }
 
-    function category(){
+    public function category()
+    {
         return $this->belongsTo(Category::class);
     }
 }

@@ -23,25 +23,20 @@ class CommentController extends Controller
      */
     public function store(Request $request, $id)
     {
-        // Set a testing user ID (can be any integer you want to test with)
-        $user = 1;
-    
-        // Validate the incoming data
+        // التحقق من صحة البيانات
         $validatedData = $request->validate([
             'comment' => 'required|string',
             'name' => 'required|string|max:255',
             'email' => 'nullable|email',
-            'userid' => 'numeric',
+            
         ]);
-    
-        // Add the blogId and userid to the validated data
+
+        // إضافة blogId إلى البيانات
         $validatedData['blogId'] = $id;
-        $validatedData['userid'] = $user;  // Using the testing user ID
-    
-        // Create the comment in the database
+
+        // إنشاء التعليق
         $comment = Comment::create($validatedData);
-    
-        // Return the comment with a 201 status
+
         return response()->json($comment, 201);
     }
     

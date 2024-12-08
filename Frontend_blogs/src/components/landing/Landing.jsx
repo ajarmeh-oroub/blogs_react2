@@ -47,7 +47,7 @@ export default function Landing() {
   return (
     <>
       <BannerArea data={data.latest}/>
-      <PostTrending trends={data.trends} latest={latest}/>
+      {/* <PostTrending trends={data.trends} latest={latest}/> */}
       {/* <PostLatest /> */}
       <PostGrid grid={grid}/>
     </>

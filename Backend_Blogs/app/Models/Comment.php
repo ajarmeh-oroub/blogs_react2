@@ -14,12 +14,12 @@ class Comment extends Model
         'comment', // النص الخاص بالتعليق
         'name',    // اسم المعلق
         'email',   // البريد الإلكتروني
-         'userid' // المستخدم المرتبط بالتعليق
+          // المستخدم المرتبط بالتعليق
     ];
 
     public function blog()
 {
-    return $this->belongsTo(Blog::class , 'blogId');
+    return $this->belongsTo(Blog::class);
 }
 
 }
