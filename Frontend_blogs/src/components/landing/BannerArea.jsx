@@ -25,9 +25,9 @@ export default function BannerArea({data, loading, error}) {
             <div className="post-meta-single">
               <ul>
                 <li>
-                  <a className="tag-base tag-blue" href="#">
+                  <Link to={`/blog/${blog.id}`} className="tag-base tag-blue" >
                     {blog.category.name}
-                  </a>
+                  </Link>
                 </li>
                 <li className="date">
                   <i className="fa fa-clock-o" />

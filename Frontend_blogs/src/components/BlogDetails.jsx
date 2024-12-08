@@ -123,7 +123,7 @@ export default function BlogDetails() {
                       <p>{new Date(blog.created_at).toLocaleString()}</p>
                     </div>
                     <div className="d-flex">
-                      <img width={42} height={42}    src="/assets/img/user.jpg"  alt="user image" />
+                      <img width={42} height={42}    src="/assets/img/user.jpg"  alt="user" />
                     </div>
                   </div>
                 </div>

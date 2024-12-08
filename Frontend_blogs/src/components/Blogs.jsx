@@ -51,7 +51,16 @@ export default function Blogs() {
   const handlePageClick = ({ selected }) => {
     setCurrentPage(selected);
   };
-
+  if (loading) return (
+    <div className="preloader" id="preloader">
+        <div className="preloader-inner">
+            <div className="spinner">
+                <div className="dot1"></div>
+                <div className="dot2"></div>
+            </div>
+        </div>
+    </div>
+  );
   return (
     <section className="blog-post-area section-margin">
       <div className="container">
@@ -130,6 +139,12 @@ export default function Blogs() {
                   Category
                 </h4>
                 <ul className="cat-list mt-20" style={{ listStyle: 'none', padding: 0, color: '#555' }}>
+                <li >
+                      <button onClick={() => handleCategoryClick('')} className="d-flex justify-content-between" style={{ textDecoration: 'none', color: '#1e2229', fontWeight: '500', transition: 'color 0.3s', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>
+                        <p>All Articles</p>
+                     
+                      </button>
+                    </li>
                   {categories.map((category) => (
                     <li key={category.id} style={{ marginBottom: '10px' }}>
                       <button onClick={() => handleCategoryClick(category.id)} className="d-flex justify-content-between" style={{ textDecoration: 'none', color: '#1e2229', fontWeight: '500', transition: 'color 0.3s', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>
