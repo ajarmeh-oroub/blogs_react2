@@ -8,17 +8,20 @@ export default function Header() {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [showResults, setShowResults] = useState(false);
+  const currentPath = location.pathname;
 
   // Function to generate dynamic page title based on the current route
   const getPageTitle = () => {
+    if (currentPath.startsWith('/blog')) {
+      return "Blog Details";
+    }
     switch (location.pathname) {
       case "/":
         return "Home";
-      case "/blogdetails":
-        return "Blog Details";
+  
       case "/favorite":
-        return "Favorite Products";
-      case "/blog":
+        return "Favorites";
+      case "/article":
         return "Blogs";
       case "/user":
         return "User Dashboard";
@@ -103,7 +106,7 @@ export default function Header() {
                   <Link to="/">Home </Link>
                 </li>
                 <li className="current-menu-item">
-                  <Link to="blog"> Blogs</Link>
+                  <Link to="/article"> Blogs</Link>
                 </li>
                 <li className="current-menu-item">
                   <Link to="contact"> contact</Link>

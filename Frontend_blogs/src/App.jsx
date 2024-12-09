@@ -24,7 +24,7 @@ function App() {
         <Route path="/blog/:id" element={<BlogDetails />} />
         <Route path='/favorite' element={<FavoritePage />} />
         <Route path='contact' element={<Contact />} />
-        <Route path='blog' element={<Blogs /> }/>
+        <Route path='/article' element={<Blogs /> }/>
         <Route path='/user' element={<ProfileIndex/>} />
         <Route path='/about' element={<AboutUs/>}/>
     
