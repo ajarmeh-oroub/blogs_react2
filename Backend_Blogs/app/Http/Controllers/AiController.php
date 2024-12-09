@@ -106,18 +106,20 @@ class AiController extends Controller
     
         // Prepare a smart prompt
         $prompt = <<<EOT
-    You are a professional writer and editor. Determine the best action based on the user's input:
-    1. If the input is an article, refine it to improve clarity, grammar, and flow.
-    2. If the input is a topic, write a detailed and engaging article about the topic.
-    3. If the input includes key points, write an article using these points as a structure.
-    4. If the input is ambiguous, clarify it by assuming the most logical context.
-    
-    Here is the input provided by the user:
-    
-    "$userInput"
-    
-    Respond appropriately.
-    EOT;
+        You are a professional writer and editor. Based on the user's input:
+        1. If the input is an article, refine it to improve clarity, grammar, and flow.
+        2. If the input is a topic, write a detailed and engaging article about the topic.
+        3. If the input includes key points, write an article using these points as a structure.
+        4. If the input is ambiguous, assume the most logical context and respond appropriately.
+        
+        Here is the input provided by the user:
+        
+        "$userInput"
+        
+        Provide only the body of the article as the output. Do not explain your actions or add any introductory text.
+        * make the article in user language.
+        EOT;
+        
     
         // Call the AI API
         $response = Http::withHeaders([
