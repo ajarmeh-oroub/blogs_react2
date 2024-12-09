@@ -9,8 +9,7 @@ import ProfileIndex from './components/Profile/ProfileIndex'
 import Blogs from './components/Blogs'
 import AboutUs from './components/AboutUs'
 import Landing from './components/landing/Landing'
-import GetAnswerFromArticle from './components/GetAnswerFromArticle'
-
+import BlogGenerator from './components/BlogGenerator'
 
 
 function App() {
@@ -28,7 +27,7 @@ function App() {
         <Route path='blog' element={<Blogs /> }/>
         <Route path='/user' element={<ProfileIndex/>} />
         <Route path='/about' element={<AboutUs/>}/>
-        <Route path='/qa' element={<GetAnswerFromArticle/>}/>
+        <Route path='/aa' element={<BlogGenerator/>}/>
     
      
       
