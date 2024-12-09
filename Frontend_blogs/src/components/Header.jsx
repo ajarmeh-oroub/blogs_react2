@@ -19,26 +19,28 @@ export default function Header() {
   };
 
   const currentPath = location.pathname;
+
   const getPageTitle = () => {
-    switch (currentPath) {
-      case "/":
+    switch (true) {
+      case currentPath === "/":
         return "Home";
-      case "/favorite":
+      case currentPath === "/favorite":
         return "Favorites";
-      case "/article":
-        return "Blogs";
-        case "/blogdetails":
-          return "Article";
-      case "/user":
+      case currentPath === "/article":
+        return "Articles";
+      case currentPath === "/user":
         return "User Dashboard";
-      case "/contact":
+      case currentPath === "/contact":
         return "Contact";
-      case "/about":
+      case currentPath === "/about":
         return "About Us";
+      case currentPath.startsWith("/blog"):
+        return "Article";
       default:
         return "Page Not Found";
     }
   };
+  
 
   // Function to handle input change and fetch results
   const handleSearchChange = async (e) => {
