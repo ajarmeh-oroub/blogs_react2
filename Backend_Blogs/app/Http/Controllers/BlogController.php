@@ -214,4 +214,15 @@ class BlogController extends Controller
 
         return response()->json(['isFavorited' => $isFavorited]);
     }
+    public function search(Request $request)
+    {
+        $query = $request->input('query');
+
+        // Example of a search query
+        $results = Blog::where('title', 'LIKE', "%$query%")
+                    ->orWhere('article', 'LIKE', "%$query%")
+                    ->get();
+
+        return response()->json($results);
+    }
 }

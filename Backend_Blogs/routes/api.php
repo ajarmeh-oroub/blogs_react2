@@ -50,3 +50,5 @@ Route::post('/favorites/{userId}/{blogId}', [BlogController::class, 'addToFavori
 Route::delete('/favorites/{userId}/{blogId}', [BlogController::class, 'removeFromFavorite']);
 Route::get('/favorites/{userId}/{blogId}', [BlogController::class, 'isFavorited']);
 Route::get('/favorites/{userId}', [BlogController::class, 'getFavoriteBlogs']);
+
+Route::get('/search', [BlogController::class, 'search']);
