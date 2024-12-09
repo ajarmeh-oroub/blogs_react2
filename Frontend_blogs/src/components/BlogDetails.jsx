@@ -164,7 +164,7 @@ export default function BlogDetails() {
         <div className="row">
           <div className="col-lg-8">
             <div className="main_blog_details">
-              <img className="img-fluid" src={blog.image} alt={blog.title} />
+              <img  className="img-fluid" width={750} height={600} src={blog.image} alt={blog.title} />
               <h4>{blog.title}</h4>
               <div className="user_details">
                 <div className="float-left">{blog.category.name}</div>
@@ -190,12 +190,12 @@ export default function BlogDetails() {
                         }}
                         onClick={handleToggleFavorite}
                       />
-                      <img width={42} height={42} src="/assets/img/user.jpg" alt="user" />
+                      <img width={42} height={42} style={{borderRadius:50 }} src="/assets/img/user.jpg" alt="user" />
                     </div>
                   </div>
                 </div>
               </div>
-              <p>{blog.article}</p>
+              <p style={{width:740}}>{blog.article}</p>
 
               {/* {isSummary && <div style={{ marginTop: "20px" }}><BlogSummarizer blogarticle={blog.article} /></div>} */}
               <GetAnswerFromArticle article={blog.article} />
