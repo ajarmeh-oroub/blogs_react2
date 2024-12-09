@@ -1,38 +1,15 @@
-import React from "react";
-import { Link, useLocation } from "react-router-dom";
-import { Helmet } from "react-helmet";
-
+import React, { useContext } from "react";
+import { Link } from "react-router-dom";
+import { useStateContext } from "../contexts/ContextProvider";
 export default function Header() {
-  const location = useLocation();
+  const { userToken, setUserToken } = useStateContext(); // Use context to access userToken and setUserToken
 
-  // Function to generate dynamic page title based on the current route
-  const getPageTitle = () => {
-    switch (location.pathname) {
-      case "/":
-        return "Home";
-      case "/blogdetails":
-        return "Blog Details";
-      case "/favorite":
-        return "Favorite Products";
-      case "/blog":
-        return "Blogs";
-      case "/user":
-        return "User Dashboard";
-        case "/contact":
-          return "Contact";
-          case "/about":
-            return "About Us";
-
-      default:
-        return "My Website"; // Default title for any unrecognized route
-    }
+  const logout = () => {
+    setUserToken(null); // Log out by removing the token from the context and localStorage
   };
 
   return (
     <>
-      <Helmet>
-        <title>{getPageTitle()}</title>
-      </Helmet>
       {/* search popup start */}
       <div className="td-search-popup" id="td-search-popup">
         <form action="index.html" className="search-form">
@@ -43,6 +20,8 @@ export default function Header() {
               placeholder="Search....."
             />
           </div>
+
+
           <button type="submit" className="submit-btn">
             <i className="fa fa-search" />
           </button>
@@ -63,7 +42,11 @@ export default function Header() {
                   </a>
                 </div>
               </div>
-            
+              <div className="logo d-lg-none d-block">
+                <a className="main-logo" href="index.html">
+                  <img src="assets/img/logo.png" alt="img" />
+                </a>
+              </div>
               <button
                 className="menu toggle-btn d-block d-lg-none"
                 data-target="#nextpage_main_menu"
@@ -82,64 +65,49 @@ export default function Header() {
             <div className="collapse navbar-collapse" id="nextpage_main_menu">
               <ul className="navbar-nav menu-open">
                 <li className="current-menu-item">
-                  <Link to="/">Home </Link>
+                  <Link to="/">Home</Link>
                 </li>
                 <li className="current-menu-item">
-                  <Link to="blog"> Blogs</Link>
+                  <Link to="/blogdetails">Blog Details</Link>
                 </li>
                 <li className="current-menu-item">
-                  <Link to="contact"> contact</Link>
+                  <Link to="/favorite">Favorite</Link>
                 </li>
                 <li className="current-menu-item">
-                  <Link to="/about"> About Us </Link>
+                  <Link to="/contact">Contact</Link>
+                </li>
+                <li className="current-menu-item">
+                  <a target="_blank" href="#">
+                    About us
+                  </a>
                 </li>
 
-               
-            
-               
-              
+                {/* Conditionally render buttons based on userToken */}
+                {!userToken ? (
+                  <>
+                    <li className="current-menu-item">
+                      <Link to="/login">Login</Link>
+                    </li>
+                   
+                  </>
+                ) : (
+                  <li className="current-menu-item">
+                    <button onClick={logout}>Logout</button>
+                  </li>
+                )}
               </ul>
             </div>
-            <div className="nav-right-part nav-right-part-desktop" style={{ display: 'flex', alignItems: 'center' }}>
+            <div className="nav-right-part nav-right-part-desktop">
               <div className="menu-search-inner">
                 <input type="text" placeholder="Search For" />
                 <button type="submit" className="submit-btn">
                   <i className="fa fa-search" />
                 </button>
               </div>
-           
-              <div className="icon-container">
-                <Link to="/favorite" className="favorite-icon">
-                  <i className="fa fa-heart text-white" style={{ marginLeft: '20px' }}></i>
-                </Link>
-                <Link to="/user" className="profile-icon">
-                  <i className="fa fa-user text-white" style={{ marginLeft: '20px' }}></i>
-                </Link>
-              </div>
             </div>
           </div>
         </nav>
       </div>
-      {/* Breadcrumb section will only be displayed if we are not on the Home page */}
-      {location.pathname !== "/" && (
-        <div
-          className="breadcrumb-section"
-          style={{ backgroundColor: "#E6F2FD", height: "100px" }}
-        >
-          <div className="container">
-            <div className="breadcrumb-content">
-              <h2>{getPageTitle()}</h2> {/* Dynamic title here */}
-              <ul className="breadcrumb-list">
-                <li>
-                  <Link to="/">Home</Link>
-                </li>
-                <li>{getPageTitle()}</li> {/* Display dynamic page title */}
-              </ul>
-            </div>
-          </div>
-        </div>
-      )}
-      {/* Breadcrumb section end */}
     </>
   );
 }

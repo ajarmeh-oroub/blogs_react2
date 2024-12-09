@@ -26,7 +26,7 @@ export default function BannerArea({data, loading, error}) {
               <ul>
                 <li>
                   <a className="tag-base tag-blue" href="#">
-                    {blog.category.name}
+                    {/* {blog.category.name} */}
                   </a>
                 </li>
                 <li className="date">
@@ -52,7 +52,7 @@ export default function BannerArea({data, loading, error}) {
       <div className="single-post-wrap style-white">
         <div className="thumb">
           <img src={blog.image} alt="img" style={{height:"200px", width: "450px"}}/>
-          <a className="tag-base tag-blue" href="#">{blog.category.name}</a>
+          {/* <a className="tag-base tag-blue" href="#">{blog.category.name}</a> */}
         </div>
         <div className="details">
           <h6 className="title">
