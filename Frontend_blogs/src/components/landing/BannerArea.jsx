@@ -40,9 +40,9 @@ export default function BannerArea({ data, favorites, toggleFavorite }) {
             <div className="post-meta-single">
               <ul>
                 <li>
-                  <Link to={`/blog/${blog.id}`} className="tag-base tag-blue">
+                  <a className="tag-base tag-blue" style={{width:95 , height:40 , fontSize:15}}>
                     {blog.category.name}
-                  </Link>
+                  </a>
                 </li>
                 <li className="date">
                   <i className="fa fa-clock-o" />
