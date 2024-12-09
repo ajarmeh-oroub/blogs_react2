@@ -1,7 +1,17 @@
-import React, { useState } from "react";
+
+import React, { useContext , useState  } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { useStateContext } from "../contexts/ContextProvider";
+export default function Header() {
+  const { userToken, setUserToken } = useStateContext(); // Use context to access userToken and setUserToken
 import { Helmet } from "react-helmet";
 import axios from "axios";
+  const logout = () => {
+    setUserToken(null); // Log out by removing the token from the context and localStorage
+
+
+
+
 
 export default function Header() {
   const location = useLocation();
@@ -58,6 +68,7 @@ export default function Header() {
       setSearchResults([]);
       setShowResults(false);
     }
+
   };
 
   // Function to hide search results when clicking outside or clearing input
@@ -69,9 +80,31 @@ export default function Header() {
 
   return (
     <>
+
+      {/* search popup start */}
+      <div className="td-search-popup" id="td-search-popup">
+        <form action="index.html" className="search-form">
+          <div className="form-group">
+            <input
+              type="text"
+              className="form-control"
+              placeholder="Search....."
+            />
+          </div>
+
+
+          <button type="submit" className="submit-btn">
+            <i className="fa fa-search" />
+          </button>
+        </form>
+      </div>
+      {/* search popup end */}
+      <div className="body-overlay" id="body-overlay" />
+
       <Helmet>
         <title>{getPageTitle()}</title>
       </Helmet>
+
       {/* header start */}
       <div className="navbar-area">
         <nav className="navbar navbar-expand-lg">
@@ -83,6 +116,12 @@ export default function Header() {
                     <img src="assets/img/logo.png" alt="img" />
                   </a>
                 </div>
+              </div>
+
+              <div className="logo d-lg-none d-block">
+                <a className="main-logo" href="index.html">
+                  <img src="assets/img/logo.png" alt="img" />
+                </a>
               </div>
 
               <button
@@ -103,25 +142,41 @@ export default function Header() {
             <div className="collapse navbar-collapse" id="nextpage_main_menu">
               <ul className="navbar-nav menu-open">
                 <li className="current-menu-item">
-                  <Link to="/">Home </Link>
+                  <Link to="/">Home</Link>
                 </li>
                 <li className="current-menu-item">
+
                   <Link to="/article"> Blogs</Link>
+
                 </li>
                 <li className="current-menu-item">
-                  <Link to="contact"> contact</Link>
+                  <Link to="/favorite">Favorite</Link>
                 </li>
                 <li className="current-menu-item">
-                  <Link to="/about"> About Us </Link>
+                  <Link to="/contact">Contact</Link>
+                </li>
+                <li className="current-menu-item">
+                  <a target="_blank" href="#">
+                    About us
+                  </a>
                 </li>
 
-               
-            
-               
-              
+                {/* Conditionally render buttons based on userToken */}
+                {!userToken ? (
+                  <>
+                    <li className="current-menu-item">
+                      <Link to="/login">Login</Link>
+                    </li>
+                   
+                  </>
+                ) : (
+                  <li className="current-menu-item">
+                    <button onClick={logout}>Logout</button>
+                  </li>
+                )}
               </ul>
             </div>
-            <div className="nav-right-part nav-right-part-desktop" style={{ display: 'flex', alignItems: 'center' }}>
+            <div className="nav-right-part nav-right-part-desktop">
               <div className="menu-search-inner">
                 <input
                   type="text"
@@ -192,6 +247,7 @@ export default function Header() {
                   </div>
                 )}
               </div>
+
               <div className="icon-container">
                 <Link to="/favorite" className="favorite-icon">
                   <i
@@ -206,30 +262,11 @@ export default function Header() {
                   ></i>
                 </Link>
               </div>
+
             </div>
           </div>
         </nav>
       </div>
-      {/* Breadcrumb section will only be displayed if we are not on the Home page */}
-      {location.pathname !== "/" && (
-        <div
-          className="breadcrumb-section"
-          style={{ backgroundColor: "#E6F2FD", height: "100px" }}
-        >
-          <div className="container">
-            <div className="breadcrumb-content">
-              <h2>{getPageTitle()}</h2> {/* Dynamic title here */}
-              <ul className="breadcrumb-list">
-                <li>
-                  <Link to="/">Home</Link>
-                </li>
-                <li>{getPageTitle()}</li> {/* Display dynamic page title */}
-              </ul>
-            </div>
-          </div>
-        </div>
-      )}
-      {/* Breadcrumb section end */}
     </>
   );
 }

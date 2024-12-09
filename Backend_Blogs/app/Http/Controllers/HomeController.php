@@ -31,4 +31,7 @@ class HomeController extends Controller
 
         return response()->json($blogs, 200);
     }
+
+
+    
 }

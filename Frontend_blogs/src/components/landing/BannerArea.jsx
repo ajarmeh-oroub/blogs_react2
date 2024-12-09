@@ -40,8 +40,10 @@ export default function BannerArea({ data, favorites, toggleFavorite }) {
             <div className="post-meta-single">
               <ul>
                 <li>
+
                   <a className="tag-base tag-blue" style={{width:95 , height:40 , fontSize:15}}>
                     {blog.category.name}
+
                   </a>
                 </li>
                 <li className="date">
@@ -56,9 +58,47 @@ export default function BannerArea({ data, favorites, toggleFavorite }) {
           </div>
         </div>
       </div>
+
+    );
+  });
+
+  // 
+  const sub = data.slice(1,5);
+  const subBannerBlogs = sub.map(function (blog) {
+    return (
+      <div className="col-lg-3 col-sm-6" key={blog.id}>
+      <div className="single-post-wrap style-white">
+        <div className="thumb">
+          <img src={blog.image} alt="img" style={{height:"200px", width: "450px"}}/>
+          {/* <a className="tag-base tag-blue" href="#">{blog.category.name}</a> */}
+        </div>
+        <div className="details">
+          <h6 className="title">
+            <Link to={`/blog/${blog.id}`}>
+              <a href="#">{blog.title}</a>
+            </Link>
+          </h6>
+          <div className="post-meta-single mt-3">
+            <ul>
+              <li>
+                <i className="fa fa-clock-o" />
+                {(new Date(blog.created_at)).getDay()}.{(new Date(blog.created_at)).getMonth()}.{(new Date(blog.created_at)).getFullYear()}
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    );
+  });
+
+
+
+
      
     </React.Fragment>
   ));
+
 
   return (
     <div className="banner-area banner-inner-1 bg-black" id="banner">
