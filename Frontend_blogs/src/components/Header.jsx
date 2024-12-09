@@ -112,7 +112,7 @@ export default function Header() {
               <div className="col-xl-6 col-lg-5 align-self-center">
                 <div className="logo text-md-left text-center">
                   <a className="main-logo" href="index.html">
-                    <img src="assets/img/logo.png" alt="img" />
+                    <img src="/assets/img/logo.png" alt="img" />
                   </a>
                 </div>
               </div>
