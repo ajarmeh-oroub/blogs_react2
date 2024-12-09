@@ -128,6 +128,7 @@ export default function Blogs() {
               top: "10px",
               right: "10px",
               zIndex: 3,
+              textShadow: "#000 1px 1px 4px", 
             }}
             onClick={() => handleToggleFavorite(blog.id)}
           />
