@@ -12,7 +12,7 @@ export default function Blogs() {
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 6;
 
-  const userId = 1; // Replace with the actual logged-in user ID
+  const userId = localStorage.getItem("USER_ID");
 
   useEffect(() => {
     const fetchCategories = async () => {
