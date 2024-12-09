@@ -77,7 +77,7 @@ export default function Landing() {
 
 
   return (
-    <>
+    <span style={{position:'relative'}}>
       <BannerArea 
         data={data.latest} 
         favorites={favorites} 
@@ -89,14 +89,15 @@ export default function Landing() {
         favorites={favorites} 
         toggleFavorite={toggleFavorite} 
       />
+              <CreateWithAISection />
+              <DiscountSection />
       <PostGrid 
         grid={grid} 
         favorites={favorites} 
         toggleFavorite={toggleFavorite} 
       />
-          <CreateWithAISection />
-      <DiscountSection />
-    </>
+  
+    </span>
 )
 
 }
@@ -136,24 +137,27 @@ function CreateWithAISection() {
 }
 function DiscountSection() {
   return (
-    <section className="discount-section" style={{ padding: '50px 0', backgroundColor: '#2C3E50', color: '#ffffff' , height:'175px' }}>
-      <div className="container">
-        <div className="row">
-          <div className="col-lg-6">
-            <h2 style={{ color: '#FFBE00' }}>Special Discount</h2>
-            <p style={{ color: '#ffffff' }}>Get 50% off on your first article submission. Join us now and start creating with our AI-powered tools!</p>
-          </div>
-          <div className="col-lg-6">
-            <img
-              src="https://images.unsplash.com/photo-1581092919534-9d2e7cd20050?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-              alt="Special Discount"
-              className="img-fluid rounded"
-              style={{ width: '100%', borderRadius: '8px' }}
-            />
-          </div>
-        </div>
+<section className="chatbot-section" style={{ padding: '30px 20px', background: 'linear-gradient(70deg, #6aafe6 0%, #097BED 100%)', color: '#ffffff', height: '230px', width: '90%', position: 'relative', top: '-100px', left: '75px' }}>
+  <div className="container">
+    <div className="row">
+      <div className="col-lg-8">
+        <h2 style={{ color: '#FFBE00' }}>Interactive Q&A</h2>
+        <p style={{ color: '#ffffff' }}>
+          Engage with our articles through our interactive Q&A chatbot. Ask questions, get insights, and discuss the content directly with our AI-powered assistant. Join us now and enhance your reading experience!
+        </p>
       </div>
-    </section>
+      <div className="col-lg-4">
+        <img
+          src="https://images.unsplash.com/photo-1518770660439-4636190af475?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
+          alt="Interactive Q&A"
+          className="img-fluid rounded"
+          style={{ width: '250px', borderRadius: '8px'}}
+        />
+      </div>
+    </div>
+  </div>
+</section>
+
 
   );
 }

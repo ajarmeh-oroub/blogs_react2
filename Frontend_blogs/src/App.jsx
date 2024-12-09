@@ -1,40 +1,58 @@
 
+import { Route, Routes, useLocation , Navigate } from 'react-router-dom';
+import Login from './auth_components/login';
+import Signup from './auth_components/signup';
+import Header from './components/Header';
+import FavoritePage from './components/FavoritePage'; 
 import BlogDetails from './components/BlogDetails'
-import Contact from './components/Contact'
-import FavoritePage from './components/FavoritePage'
-import Footer from './components/Footer'
-import Header from './components/Header'
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import ProfileIndex from './components/Profile/ProfileIndex'
+import Landing from './components/landing/Landing';
+import Contact from './components/Contact';
 import Blogs from './components/Blogs'
+import ProfileIndex from './components/Profile/ProfileIndex'
 import AboutUs from './components/AboutUs'
-import Landing from './components/landing/Landing'
-import ArticleHandler from './components/ArticleHandler'
+import GuestLayout from './auth_components/guestlayout';
+import Footer from './components/Footer'
+// import Header  from './components/Header';
+
 
 function App() {
 
-  return (
-    <BrowserRouter>
+  const location = useLocation();
 
-     <Header/>
-    
-    <Routes>
+  const hideHeaderFooter = ["/login", "/signup"].some((path) => location.pathname.startsWith(path));
+
+
+  return (
+    <div>
+      {/* Conditionally render Header */}
+      {!hideHeaderFooter && <Header />}
+
+      <Routes>
+        {/* Public routes */}
         <Route path="/" element={<Landing/>} />
         <Route path="/blog/:id" element={<BlogDetails />} />
         <Route path='/favorite' element={<FavoritePage />} />
         <Route path='contact' element={<Contact />} />
-        <Route path='blog' element={<Blogs /> }/>
+        <Route path='/article' element={<Blogs /> }/>
         <Route path='/user' element={<ProfileIndex/>} />
         <Route path='/about' element={<AboutUs/>}/>
-        <Route path='/aa' element={<ArticleHandler/>}/>
-    
-     
-      
+
+
+       {/* Authentication routes inside GuestLayout */}
+       <Route path="/" element={<GuestLayout/>}>
+          <Route path="login" element={<Login />} />
+          <Route path="signup" element={<Signup />} />
+        </Route>
+
+        {/* Redirects */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+
       </Routes>
-     <Footer/>
-    
-    </BrowserRouter>
-  )
+
+      {/* Conditionally render Footer */}
+      {!hideHeaderFooter && <Footer />}
+    </div>
+  );
 }
 
-export default App
+export default App;

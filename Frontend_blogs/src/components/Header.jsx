@@ -1,24 +1,29 @@
-import React, { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import React, { useContext, useState } from "react";
+import { useLocation, Link } from "react-router-dom";
+import { useStateContext } from "../contexts/ContextProvider"; // Ensure this provides userToken and setUserToken
 import { Helmet } from "react-helmet";
-import axios from "axios";
+import axios from 'axios';
+
 
 export default function Header() {
+  const { userToken, setUserToken } = useStateContext(); // Destructure userToken and setUserToken from context
   const location = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [showResults, setShowResults] = useState(false);
 
-  // Function to generate dynamic page title based on the current route
+  const logout = () => {
+    setUserToken(null); // Update the token in the context
+  };
+
+  const currentPath = location.pathname;
   const getPageTitle = () => {
-    switch (location.pathname) {
+    switch (currentPath) {
       case "/":
         return "Home";
-      case "/blogdetails":
-        return "Blog Details";
       case "/favorite":
-        return "Favorite Products";
-      case "/blog":
+        return "Favorites";
+      case "/article":
         return "Blogs";
       case "/user":
         return "User Dashboard";
@@ -26,8 +31,6 @@ export default function Header() {
         return "Contact";
       case "/about":
         return "About Us";
-      case '/contact':
-        return "Contact";
       default:
         return "Page Not Found";
     }
@@ -55,6 +58,7 @@ export default function Header() {
       setSearchResults([]);
       setShowResults(false);
     }
+
   };
 
   // Function to hide search results when clicking outside or clearing input
@@ -66,11 +70,36 @@ export default function Header() {
 
   return (
     <>
+ <Helmet>
+        <title>{getPageTitle()}</title>
+      </Helmet>
+      {/* search popup start */}
+      <div className="td-search-popup" id="td-search-popup">
+        <form action="index.html" className="search-form">
+          <div className="form-group">
+            <input
+              type="text"
+              className="form-control"
+              placeholder="Search....."
+            />
+          </div>
+
+
+          <button type="submit" className="submit-btn">
+            <i className="fa fa-search" />
+          </button>
+        </form>
+      </div>
+      {/* search popup end */}
+      <div className="body-overlay" id="body-overlay" />
+
       <Helmet>
         <title>{getPageTitle()}</title>
       </Helmet>
+
       {/* header start */}
       <div className="navbar-area">
+        {/* navbar start */}
         <nav className="navbar navbar-expand-lg">
           <div className="container nav-container">
             <div className="responsive-mobile-menu">
@@ -81,7 +110,11 @@ export default function Header() {
                   </a>
                 </div>
               </div>
-
+              <div className="logo d-lg-none d-block">
+                <a className="main-logo" href="index.html">
+                  <img src="assets/img/logo.png" alt="img" />
+                </a>
+              </div>
               <button
                 className="menu toggle-btn d-block d-lg-none"
                 data-target="#nextpage_main_menu"
@@ -100,26 +133,26 @@ export default function Header() {
             <div className="collapse navbar-collapse" id="nextpage_main_menu">
               <ul className="navbar-nav menu-open">
                 <li className="current-menu-item">
-                  <Link to="/">Home </Link>
+                  <Link to="/">Home</Link>
                 </li>
                 <li className="current-menu-item">
-                  <Link to="blog"> Blogs</Link>
+                  <Link to="/article">Article</Link>
                 </li>
                 <li className="current-menu-item">
-                  <Link to="contact"> contact</Link>
+                  <Link to="/contact">Contact</Link>
                 </li>
                 <li className="current-menu-item">
-                  <Link to="/about"> About Us </Link>
+                  <Link to="/about">
+                    About us
+                  </Link>
                 </li>
 
-               
-            
-               
-              
+                {/* Conditionally render buttons based on userToken */}
+   
               </ul>
             </div>
-            <div className="nav-right-part nav-right-part-desktop" style={{ display: 'flex', alignItems: 'center' }}>
-              <div className="menu-search-inner">
+            <div className="nav-right-part nav-right-part-desktop mx-3" style={{ display: 'flex', alignItems: 'center' }}>
+              <div className="menu-search-inner ">
                 <input
                   type="text"
                   placeholder="Search For"
@@ -189,26 +222,58 @@ export default function Header() {
                   </div>
                 )}
               </div>
-              <div className="icon-container">
-                <Link to="/favorite" className="favorite-icon">
-                  <i
-                    className="fa fa-heart text-white"
-                    style={{ marginLeft: "20px" }}
-                  ></i>
-                </Link>
-                <Link to="/user" className="profile-icon">
-                  <i
-                    className="fa fa-user text-white"
-                    style={{ marginLeft: "20px" }}
-                  ></i>
-                </Link>
-              </div>
+           
             </div>
+            <ul className="navbar-nav menu-open">
+              {!userToken ? (
+                  <>
+                    <li className="current-menu-item mx-3">
+                      <Link to="/login"   style={{
+    all: "unset", // Resets all default styles
+    cursor: "pointer",
+    color:'white' ,
+    textDecoration: "none", // Ensures it still looks clickable
+  }}>Login</Link>
+                    </li>
+                   
+                  </>
+                ) : (
+                  <>
+                 
+                  <li className="current-menu-item">
+  <Link to="/favorite">
+    <i className="fa fa-heart" style={{ marginRight: "8px"  , color:"white"}}></i> 
+  
+  </Link>
+
+  <Link to="/user">
+    <i className="fa fa-user" style={{ marginRight: "8px"  , color:'white'}}></i> 
+
+  </Link>
+</li>
+<li className="current-menu-item mx-3">
+<button
+  onClick={logout}
+  style={{
+    all: "unset", // Resets all default styles
+    cursor: "pointer",
+    color:'white' ,
+    textDecoration: "none", // Ensures it still looks clickable
+  }}
+>
+  Logout
+</button>
+
+                  </li>
+
+                
+                  </>
+                )}
+                  </ul>
           </div>
         </nav>
       </div>
-      {/* Breadcrumb section will only be displayed if we are not on the Home page */}
-      {location.pathname !== "/" && (
+       {location.pathname !== "/" && (
         <div
           className="breadcrumb-section"
           style={{ backgroundColor: "#E6F2FD", height: "100px" }}
@@ -226,7 +291,6 @@ export default function Header() {
           </div>
         </div>
       )}
-      {/* Breadcrumb section end */}
     </>
   );
 }

@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { getBlogs, getCatigories } from '../Services/Api';
-import { fetchFavorites, toggleFavorite } from '../Services/Api';
+import ReactPaginate from 'react-paginate';
+import { getBlogs, getCatigories, fetchFavorites, toggleFavorite } from '../Services/Api';
 import { Link } from 'react-router-dom';
 
-export default function Blogs() {
+export default function FavoritePage() {
   const [blogs, setBlogs] = useState([]);
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('');
   const [dateRange, setDateRange] = useState('');
   const [favorites, setFavorites] = useState(new Set());
   const [loading, setLoading] = useState(true);
-
+  const [currentPage, setCurrentPage] = useState(0);
+  const itemsPerPage = 6;
   const userId = 1; // Replace with the actual logged-in user ID
 
   // Fetch categories on mount
@@ -75,8 +76,13 @@ export default function Blogs() {
     }
   };
 
-  // Filter blogs to only show favorites
-  const favoriteBlogs = blogs.filter((blog) => favorites.has(blog.id));
+  const offset = currentPage * itemsPerPage;
+  const currentItems = blogs.slice(offset, offset + itemsPerPage);
+  const pageCount = Math.ceil(blogs.length / itemsPerPage);
+
+  const handlePageClick = ({ selected }) => {
+    setCurrentPage(selected);
+  };
 
   return (
     <section className="blog-post-area section-margin">
@@ -88,8 +94,8 @@ export default function Blogs() {
               <p>Loading...</p>
             ) : (
               <div className="row">
-                {favoriteBlogs.length > 0 ? (
-                  favoriteBlogs.map((blog) => (
+                {currentItems.length > 0 ? (
+                  currentItems.map((blog) => (
                     <div key={blog.id} className="col-lg-6 col-md-6 col-sm-12 mb-4">
                       <div className="single-post-wrap style-box border rounded-lg overflow-hidden shadow-lg">
                         <div className="thumb">
@@ -152,30 +158,127 @@ export default function Blogs() {
                     </div>
                   ))
                 ) : (
-                  <p>No favorite blogs found.</p>
+                  <p>No blogs found.</p>
                 )}
               </div>
             )}
+            <ReactPaginate
+              previousLabel={"previous"}
+              nextLabel={"next"}
+              breakLabel={"..."}
+              pageCount={pageCount}
+              marginPagesDisplayed={2}
+              pageRangeDisplayed={5}
+              onPageChange={handlePageClick}
+              containerClassName={"pagination pagination-margin"}
+              activeClassName={"active"}
+            />
           </div>
 
           {/* Sidebar */}
-          <div className="col-lg-4 sidebar-widgets">
-            <div className="widget-wrap" style={{ padding: '20px', backgroundColor: '#ffffff', borderRadius: '10px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}>
-              <div className="single-sidebar-widget post-category-widget" style={{ marginBottom: '30px' }}>
-                <h4 className="single-sidebar-widget__title" style={{ fontSize: '18px', fontWeight: 'bold', color: '#1e2229', borderBottom: '2px solid #007BFF', paddingBottom: '10px' }}>
-                  Category
+          <div className="col-lg-4 sidebar-widgets" style={{ position: 'relative' }}>
+            <div className="widget-wrap" style={{ padding: '20px', backgroundColor: '#ffffff', borderRadius: '10px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.4)' ,position: 'sticky', left: '0', top: '0'  }}>
+            <div className="single-sidebar-widget popular-post-widget">
+            <h4 className="single-sidebar-widget__title" style={{ fontSize: '18px', fontWeight: 'bold', color: '#1e2229', borderBottom: '2px solid #007BFF', paddingBottom: '10px' }}>
+                  Popular Posts
                 </h4>
-                <ul className="cat-list mt-20" style={{ listStyle: 'none', padding: 0, color: '#555' }}>
-                  {categories.map((category) => (
-                    <li key={category.id} style={{ marginBottom: '10px' }}>
-                      <a href="#" className="d-flex justify-content-between" style={{ textDecoration: 'none', color: '#1e2229', fontWeight: '500', transition: 'color 0.3s' }}>
-                        <p>{category.name}</p>
-                        <p>{category.post_count}</p>
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+  <div className="popular-post-list">
+  {loading ? <p>Loading...</p> : (
+  blogs[0] && (
+    <div className="single-post-list single-post-wrap style-white">
+      <div className="thumb">
+        
+        <img className="card-img rounded-0" width={250} height={150} src={blogs[0].image} alt="" />
+        <a className="tag-base tag-light-green" href="#">
+                    {blogs[0].category.name}
+                  </a>
+        <ul className="thumb-info " style={{ backgroundColor: 'rgba(0, 0, 0, 0.2)'}}>
+          <li>
+          <li className='text-truncate' >
+          <Link to={`/blog/${blogs[0].id}`} style={{color:'white'}}>
+          {blogs[0].title || ""}
+        </Link>
+          </li>
+          </li>
+        </ul>
+      </div>
+   
+    </div>
+  )
+)}
+
+{loading ? <p>Loading...</p> : (
+  blogs[1] && (
+    <div className="single-post-list single-post-wrap style-white">
+      <div className="thumb">
+        <img className="card-img rounded-0" width={250} height={150} src={blogs[1].image} alt="" />
+        <a className="tag-base tag-red" href="#">
+                    {blogs[1].category.name}
+                  </a>
+        <ul className="thumb-info" style={{ backgroundColor: 'rgba(0, 0, 0, 0.4)'}}>
+          <li>
+          <li className='text-truncate'>
+          <Link to={`/blog/${blogs[1].id}`} style={{color:'white'}}>
+          {blogs[1].title || ""}
+        </Link>
+          </li>
+          </li>
+        </ul>
+      </div>
+    
+    </div>
+  )
+)}
+      {loading ? <p>Loading...</p> : (
+  blogs[2] && (
+    <div className="single-post-list single-post-wrap style-white">
+      <div className="thumb">
+        <img className="card-img rounded-0" width={250} height={150} src={blogs[2].image} alt="" />
+        <a className="tag-base tag-purple" href="#">
+                    {blogs[2].category.name}
+                  </a>
+        <ul className="thumb-info" style={{ backgroundColor: 'rgba(0, 0, 0, 0.4)'}}>
+          <li>
+          <li className='text-truncate'>
+          <Link to={`/blog/${blogs[2].id}`} style={{color:'white'}}>
+          {blogs[2].title || ""}
+        </Link>
+          </li>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+  )
+)}
+  {loading ? <p>Loading...</p> : (
+  blogs[3] && (
+    <div className="single-post-list single-post-wrap style-white">
+      <div className="thumb">
+      {/* <ul className="" style={{top:0 }}>
+        <li >  <a className="tag-base tag-blue" href="#">
+                    {blogs[3].category.name}
+                  </a></li>
+      </ul> */}
+        <img className="card-img rounded-0" width={250} height={150} src={blogs[3].image} alt="" />
+        <a className="tag-base tag-green" href="#">
+                    {blogs[3].category.name}
+                  </a>
+        <ul className="thumb-info" style={{ backgroundColor: 'rgba(0, 0, 0, 0.4)'}}>
+          <li className='text-truncate'>
+          <Link to={`/blog/${blogs[3].id}`} style={{color:'white'}}>
+          {blogs[3].title || ""}
+        </Link>
+          </li>
+        </ul>
+      </div>
+     
+    </div>
+  )
+)}
+  </div>
+</div>
+
             </div>
           </div>
         </div>
