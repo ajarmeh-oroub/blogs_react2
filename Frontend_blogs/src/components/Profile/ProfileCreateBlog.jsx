@@ -1,21 +1,31 @@
 import { useState, useEffect } from "react";
 import { getCatigories, createBlog } from "../../Services/Api";
 import axios from "axios";
+
+import ArticleHandler from "../ArticleHandler";
+
 import { useStateContext } from "../../contexts/ContextProvider";
+
 
 export default function ProfileCreateBlog({ setIsCreatingBlog }) {
   const [blogDetails, setBlogDetails] = useState({
     title: "",
     article: "",
     category_id: "",
-    image: "", 
-    short_description: "", 
+    image: "",
+    short_description: "",
   });
   const { userToken, setUserToken , currentUser } = useStateContext(); 
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [categories, setCategories] = useState([]);
   const [loadingImage, setLoadingImage] = useState(false);
+  const [exportedData, setExportedData] = useState("");
+
+  const handleExport = (data) => {
+    console.log("Exported Data:", data);
+    setExportedData(data);
+  };
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -31,6 +41,14 @@ export default function ProfileCreateBlog({ setIsCreatingBlog }) {
     };
     fetchCategories();
   }, []);
+
+  // Use exportedData to update blogDetails.article once
+  useEffect(() => {
+    if (exportedData) {
+      setBlogDetails((prev) => ({ ...prev, article: exportedData }));
+      setExportedData(""); // Clear exported data after updating
+    }
+  }, [exportedData]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -52,7 +70,7 @@ export default function ProfileCreateBlog({ setIsCreatingBlog }) {
     try {
       const apiUrl = "https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-xl-base-1.0";
       const apiKey = "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"; 
-      
+
       const response = await axios.post(
         apiUrl,
         { inputs: blogDetails.article }, // Pass the article as the prompt
@@ -78,19 +96,21 @@ export default function ProfileCreateBlog({ setIsCreatingBlog }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     try {
       const formData = new FormData();
       formData.append("title", blogDetails.title);
       formData.append("article", blogDetails.article);
       formData.append("category_id", blogDetails.category_id);
-      formData.append("short_description", blogDetails.short_description); 
-      
+      formData.append("short_description", blogDetails.short_description);
+
       if (blogDetails.image) {
-        formData.append("image", blogDetails.image); 
+        formData.append("image", blogDetails.image);
       }
 
+
       const response = await createBlog(currentUser.id ,formData); 
+
       if (response) {
         setSuccess("Blog created successfully.");
         setError(null);
@@ -134,6 +154,10 @@ export default function ProfileCreateBlog({ setIsCreatingBlog }) {
                   value={blogDetails.article}
                   onChange={handleInputChange}
                   required
+                />
+                <ArticleHandler
+                  inputText={blogDetails.article}
+                  onExport={handleExport}
                 />
               </div>
 
@@ -193,7 +217,7 @@ export default function ProfileCreateBlog({ setIsCreatingBlog }) {
 
               <button
                 type="button"
-               className="btn btn-secondary mx-2"
+                className="btn btn-secondary mx-2"
                 onClick={generateImage}
                 disabled={loadingImage}
               >

@@ -66,3 +66,5 @@ Route::get('/favorites/{userId}', [BlogController::class, 'getFavoriteBlogs']);
 Route::get('/search', [BlogController::class, 'search']);
 Route::post('/getAnswerFromArticle', [AiController::class, 'getAnswerFromArticle']);
 
+Route::post('/generateBlog', [AiController::class, 'generateBlog']);
+Route::post('/handleArticleInput', [AiController::class, 'handleArticleInput']);
