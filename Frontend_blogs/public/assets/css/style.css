@@ -2230,7 +2230,7 @@ ul {
 .banner-inner .thumb img {
   position: relative;
   z-index: 3;
-  border-radius: 5px;
+  /* border-radius: 5px; */
 }
 .banner-inner .thumb.after-left-top {
   margin-left: 30px;

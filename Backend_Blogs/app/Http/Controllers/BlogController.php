@@ -13,32 +13,27 @@ use Illuminate\Support\Facades\Storage;
 
 class BlogController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */public function index(Request $request)
-{
-    // Retrieve the category_id from the request
-    $categoryId = $request->query('category');
-
-    // If a category is selected, filter blogs by that category
-    if ($categoryId) {
-        $blogs = Blog::where('category_id', $categoryId)->get();
-    } else {
-        // Otherwise, retrieve all blogs
-        $blogs = Blog::all();
-    }
-
-    // Return the filtered blogs (or all if no filter is applied) as JSON
-    return response()->json($blogs);
-}
-
+    public function index(Request $request)
+    {
+        // Retrieve the category_id from the request
+        $categoryId = $request->query('category');
     
-
-
-
-    /**
-     * Store a newly created resource in storage.
-     */
+        // Base query with eager loading for relationships
+        $query = Blog::with(['category', 'user', 'comments']);
+    
+        // If a category is selected, filter blogs by that category
+        if ($categoryId) {
+            $query->where('category_id', $categoryId);
+        }
+    
+        // Execute the query to get the blogs
+        $blogs = $query->get();
+    
+        // Return the blogs (filtered or not) as JSON
+        return response()->json($blogs);
+    }
+    
+   
     public function store(Request $request)
     {
         // Validate the incoming data
