@@ -27,6 +27,8 @@ export default function Header() {
         return "Favorites";
       case "/article":
         return "Blogs";
+        case "/blogdetails":
+          return "Article";
       case "/user":
         return "User Dashboard";
       case "/contact":
