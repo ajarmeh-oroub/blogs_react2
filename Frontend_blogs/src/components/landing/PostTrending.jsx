@@ -110,7 +110,7 @@ export default function PostTrending({ trends, latest,  data, favorites, toggleF
         <div className="section-title">
           <div className="row">
             <div className="col-md-3 mb-2 mb-md-0">
-              <h6 className="title">Trending Blogs</h6>
+              <h6 className="title">Trending Articles</h6>
             </div>
           </div>
         </div>

@@ -5,10 +5,9 @@ export default function PostGrid({ grid, favorites, toggleFavorite}) {
   const gridBlogs = grid.map(function (blog) {
     return (
       <div className="col-lg-3 col-sm-6" key={blog.id}>
+        
       <div className="single-post-wrap style-overlay">
-      <div className="col-md-3 mb-2 mb-md-0">
-              <h6 className="title">Latest Articles</h6>
-            </div>
+      
         <div className="thumb">
           <img src={blog.image} alt="img" style={{height: "266px", width: "100%"}}
           className="img-fluid"/>
@@ -50,8 +49,12 @@ export default function PostGrid({ grid, favorites, toggleFavorite}) {
 
   return (
     <div className="pd-top-80 pd-bottom-50" id="grid">
+      
       <div className="container">
-        <div className="row">{gridBlogs}</div>
+      <div className="col-md-3 mb-4 mb-md-0">
+              <h5 className="title">Latest Articles</h5>
+            </div>
+        <div className="row mt-3">{gridBlogs}</div>
       </div>
     </div>
   );
