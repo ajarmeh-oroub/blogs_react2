@@ -5,38 +5,35 @@ namespace App\Http\Controllers;
 
 
 use App\Models\Blog;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class BlogController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-  public function index(Request $request)
-{
-    // Retrieve the category_id from the request
-    $categoryId = $request->query('category');
-
-    // If a category is selected, filter blogs by that category
-    if ($categoryId) {
-        $blogs = Blog::where('category_id', $categoryId)->get();
-    } else {
-        // Otherwise, retrieve all blogs
-        $blogs = Blog::all();
-    }
-
-    // Return the filtered blogs (or all if no filter is applied) as JSON
-    return response()->json($blogs);
-}
+    public function index(Request $request)
+    {
+        // Retrieve the category_id from the request
+        $categoryId = $request->query('category');
     
-
-
-
-    /**
-     * Store a newly created resource in storage.
-     */
+        // Base query with eager loading for relationships
+        $query = Blog::with(['category', 'user', 'comments']);
+    
+        // If a category is selected, filter blogs by that category
+        if ($categoryId) {
+            $query->where('category_id', $categoryId);
+        }
+    
+        // Execute the query to get the blogs
+        $blogs = $query->get();
+    
+        // Return the blogs (filtered or not) as JSON
+        return response()->json($blogs);
+    }
+    
+   
     public function store(Request $request)
     {
         // Validate the incoming data
@@ -93,11 +90,12 @@ class BlogController extends Controller
      public function update(Request $request, $id)
      {
          // Validate the incoming data
+        //  Log::info('Update Request Data: ', ['data' => $request->all]);
          $validatedData = $request->validate([
-             'title' => 'nullable|string|max:255', // title is optional now
-             'article' => 'nullable|string', // article is optional now
-             'category_id' => 'nullable|integer', // category_id is optional now
-             'image' => 'nullable|string', // Validate the image as a URL if provided
+             'title' => 'nullable|string|max:255', 
+             'article' => 'nullable|string',
+             'category_id' => 'nullable|integer',
+             'image' => 'nullable|string', 
          ]);
      
          // Find the blog by ID
@@ -167,5 +165,59 @@ class BlogController extends Controller
 
         return response()->json($blogs);
 
+    }
+
+    public function getFavoriteBlogs($userId = 1)
+    {
+        // Retrieve the user's favorite blogs using Query Builder
+        $favoriteBlogs = DB::table('blog_user')
+            ->join('blogs', 'blog_user.blog_id', '=', 'blogs.id') // Assuming the blogs table has an 'id' column
+            ->where('blog_user.user_id', $userId)
+            ->select('blogs.*') // Select the desired columns from the blogs table
+            ->get();
+    
+        return response()->json(['favoriteBlogs' => $favoriteBlogs]);
+    }
+    
+    public function addToFavorite(Request $request, $userId, $blogId)
+    {
+        // Retrieve the user by ID
+        $user = User::findOrFail($userId);
+    
+        // Attach the blog to the user's favorites
+        $user->blog_favorites()->attach($blogId);
+    
+        return response()->json(['message' => 'Blog added to favorites.']);
+    }
+    public function removeFromFavorite(Request $request, $userId, $blogId)
+    {
+        // Retrieve the user by ID
+        $user = User::findOrFail($userId);
+
+        // Detach the blog from the user's favorites
+        $user->blog_favorites()->detach($blogId);
+
+        return response()->json(['message' => 'Blog removed from favorites.']);
+    }
+    public function isFavorited($userId, $blogId)
+    {
+        // Retrieve the user by ID
+        $user = User::findOrFail($userId);
+
+        // Check if the blog is in the user's favorites
+        $isFavorited = $user->blog_favorites()->where('blog_id', $blogId)->exists();
+
+        return response()->json(['isFavorited' => $isFavorited]);
+    }
+    public function search(Request $request)
+    {
+        $query = $request->input('query');
+
+        // Example of a search query
+        $results = Blog::where('title', 'LIKE', "%$query%")
+                    ->orWhere('article', 'LIKE', "%$query%")
+                    ->get();
+
+        return response()->json($results);
     }
 }

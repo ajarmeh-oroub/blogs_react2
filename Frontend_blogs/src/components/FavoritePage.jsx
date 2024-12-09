@@ -1,548 +1,288 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react';
+import ReactPaginate from 'react-paginate';
+import { getBlogs, getCatigories, fetchFavorites, toggleFavorite } from '../Services/Api';
+import { Link } from 'react-router-dom';
 
-export default function FavoritePage() {
+export default function Blogs() {
+  const [blogs, setBlogs] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState('');
+  const [dateRange, setDateRange] = useState('');
+  const [favorites, setFavorites] = useState(new Set());
+  const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(0);
+  const itemsPerPage = 6;
+  const userId = 1; // Replace with the actual logged-in user ID
+
+  // Fetch categories on mount
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const categories = await getCatigories();
+        setCategories(categories);
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+      }
+    };
+    fetchCategories();
+  }, []);
+
+  // Fetch blogs based on filters
+  useEffect(() => {
+    const fetchBlogs = async () => {
+      setLoading(true);
+      try {
+        const filters = { categoryId: selectedCategory, dateRange };
+        const fetchedBlogs = await getBlogs(filters);
+        setBlogs(fetchedBlogs || []);
+      } catch (err) {
+        console.error('Error fetching blogs:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchBlogs();
+  }, [selectedCategory, dateRange]);
+
+  // Fetch user's favorite blogs on mount
+  useEffect(() => {
+    const fetchUserFavorites = async () => {
+      try {
+        const userFavorites = await fetchFavorites(userId);
+        setFavorites(new Set(userFavorites)); // Ensure it's a Set
+      } catch (error) {
+        console.error('Error fetching user favorites:', error);
+      }
+    };
+    fetchUserFavorites();
+  }, [userId]);
+
+  // Handle toggling of favorite blogs
+  const handleToggleFavorite = async (blogId) => {
+    const isFavorite = favorites.has(blogId);
+    try {
+      await toggleFavorite(userId, blogId, isFavorite);
+      setFavorites((prevFavorites) => {
+        const updatedFavorites = new Set(prevFavorites);
+        if (isFavorite) {
+          updatedFavorites.delete(blogId);
+        } else {
+          updatedFavorites.add(blogId);
+        }
+        return updatedFavorites;
+      });
+    } catch (error) {
+      console.error('Error toggling favorite:', error);
+    }
+  };
+
+  const offset = currentPage * itemsPerPage;
+  const currentItems = blogs.slice(offset, offset + itemsPerPage);
+  const pageCount = Math.ceil(blogs.length / itemsPerPage);
+
+  const handlePageClick = ({ selected }) => {
+    setCurrentPage(selected);
+  };
+
   return (
     <section className="blog-post-area section-margin">
-    <div className="container">
-      <div className="row">
-        <div className="col-lg-8">
-          <div className="row">
-            <div className="col-md-6">
-              <div className="single-recent-blog-post card-view">
-                <div className="thumb">
-                  <img
-                    className="card-img rounded-0"
-                    src="img/blog/thumb/thumb-card1.png"
-                    alt=""
-                  />
-                  <ul className="thumb-info">
-                    <li>
-                      <a href="#">
-                        <i className="ti-user" />
-                        Admin
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#">
-                        <i className="ti-themify-favicon" />2 Comments
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-                <div className="details mt-20">
-                  <a href="blog-single.html">
-                    <h3>
-                      Fast cars and rickety bridges as he grand tour returns
-                    </h3>
-                  </a>
-                  <p>
-                    Vel aliquam quis, nulla pede mi commodo no tristique nam hac
-                    luctus torquent velit felis lone commodo pellentesque
-                  </p>
-                  <a className="btn btn-blue" href="#">
-                    Read More <i className="ti-arrow-right" />
-                  </a>
-                </div>
+      <div className="container">
+        <div className="row">
+          {/* Main content */}
+          <div className="col-lg-8">
+            {loading ? (
+              <p>Loading...</p>
+            ) : (
+              <div className="row">
+                {currentItems.length > 0 ? (
+                  currentItems.map((blog) => (
+                    <div key={blog.id} className="col-lg-6 col-md-6 col-sm-12 mb-4">
+                      <div className="single-post-wrap style-box border rounded-lg overflow-hidden shadow-lg">
+                        <div className="thumb">
+                          <img
+                            className="card-img rounded-0 img-fluid"
+                            style={{
+                              height: '250px',
+                              width: '100%',
+                              objectFit: 'cover',
+                            }}
+                            src={`${blog.image}`}
+                            alt={blog.title || 'Blog Thumbnail'}
+                          />
+                          <i
+                            className={`fa fa-heart`}
+                            style={{
+                              color: favorites.has(blog.id) ? 'red' : 'white',
+                              cursor: 'pointer',
+                              marginLeft: '10px',
+                              fontSize: '24px',
+                              position: 'absolute',
+                              top: '10px',
+                              right: '10px',
+                              zIndex: 3,
+                            }}
+                            onClick={() => handleToggleFavorite(blog.id)}
+                          />
+                        </div>
+
+                        <div className="details p-4">
+                          <div className="post-meta-single mb-3">
+                            <ul className="d-flex list-unstyled">
+                              <li className="me-3">
+                                <i className="fa fa-user" />
+                                {blog.user
+                                  ? `${blog.user.first_name} ${blog.user.last_name}`
+                                  : 'Anonymous'}
+                              </li>
+                              <li className="me-3">
+                                <i className="fa fa-calendar" />
+                                {new Date(blog.created_at).toLocaleDateString()}
+                              </li>
+                              <li>
+                                <i className="fa fa-comments" />
+                                Comments ({blog.comments ? blog.comments.length : '0'})
+                              </li>
+                            </ul>
+                          </div>
+                          <h5 className="title mb-3" style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', width: '100%' }}>
+                            <Link to={`/blog/${blog.id}`} style={{ color: '#2d3e50', fontWeight: 'bold' }}>
+                              {blog.title}
+                            </Link>
+                          </h5>
+                          <p className="mb-3" style={{ fontSize: '0.9rem', color: '#6c757d' }}>
+                            {blog.short_description || 'Short description not available.'}
+                          </p>
+                          <Link to={`/blog/${blog.id}`} className="btn btn-blue me-2">Read More</Link>
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <p>No blogs found.</p>
+                )}
               </div>
-            </div>
-            <div className="col-md-6">
-              <div className="single-recent-blog-post card-view">
-                <div className="thumb">
-                  <img
-                    className="card-img rounded-0"
-                    src="img/blog/thumb/thumb-card2.png"
-                    alt=""
-                  />
-                  <ul className="thumb-info">
-                    <li>
-                      <a href="#">
-                        <i className="ti-user" />
-                        Admin
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#">
-                        <i className="ti-themify-favicon" />2 Comments
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-                <div className="details mt-20">
-                  <a href="blog-single.html">
-                    <h3>Harvey Weinstein's senual assault trial set for May</h3>
-                  </a>
-                  <p>
-                    Vel aliquam quis, nulla pede mi commodo no tristique nam hac
-                    luctus torquent velit felis lone commodo pellentesque
-                  </p>
-                  <a className="btn btn-blue" href="#">
-                    Read More <i className="ti-arrow-right" />
-                  </a>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-6">
-              <div className="single-recent-blog-post card-view">
-                <div className="thumb">
-                  <img
-                    className="card-img rounded-0"
-                    src="img/blog/thumb/thumb-card3.png"
-                    alt=""
-                  />
-                  <ul className="thumb-info">
-                    <li>
-                      <a href="#">
-                        <i className="ti-user" />
-                        Admin
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#">
-                        <i className="ti-themify-favicon" />2 Comments
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-                <div className="details mt-20">
-                  <a href="blog-single.html">
-                    <h3>
-                      Fast cars and rickety bridges as he grand tour returns
-                    </h3>
-                  </a>
-                  <p>
-                    Vel aliquam quis, nulla pede mi commodo no tristique nam hac
-                    luctus torquent velit felis lone commodo pellentesque
-                  </p>
-                  <a className="btn btn-blue" href="#">
-                    Read More <i className="ti-arrow-right" />
-                  </a>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-6">
-              <div className="single-recent-blog-post card-view">
-                <div className="thumb">
-                  <img
-                    className="card-img rounded-0"
-                    src="img/blog/thumb/thumb-card4.png"
-                    alt=""
-                  />
-                  <ul className="thumb-info">
-                    <li>
-                      <a href="#">
-                        <i className="ti-user" />
-                        Admin
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#">
-                        <i className="ti-themify-favicon" />2 Comments
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-                <div className="details mt-20">
-                  <a href="blog-single.html">
-                    <h3>Harvey Weinstein's senual assault trial set for May</h3>
-                  </a>
-                  <p>
-                    Vel aliquam quis, nulla pede mi commodo no tristique nam hac
-                    luctus torquent velit felis lone commodo pellentesque
-                  </p>
-                  <a className="btn btn-blue" href="#">
-                    Read More <i className="ti-arrow-right" />
-                  </a>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-6">
-              <div className="single-recent-blog-post card-view">
-                <div className="thumb">
-                  <img
-                    className="card-img rounded-0"
-                    src="img/blog/thumb/thumb-card5.png"
-                    alt=""
-                  />
-                  <ul className="thumb-info">
-                    <li>
-                      <a href="#">
-                        <i className="ti-user" />
-                        Admin
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#">
-                        <i className="ti-themify-favicon" />2 Comments
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-                <div className="details mt-20">
-                  <a href="blog-single.html">
-                    <h3>
-                      Fast cars and rickety bridges as he grand tour returns
-                    </h3>
-                  </a>
-                  <p>
-                    Vel aliquam quis, nulla pede mi commodo no tristique nam hac
-                    luctus torquent velit felis lone commodo pellentesque
-                  </p>
-                  <a className="btn btn-blue" href="#">
-                    Read More <i className="ti-arrow-right" />
-                  </a>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-6">
-              <div className="single-recent-blog-post card-view">
-                <div className="thumb">
-                  <img
-                    className="card-img rounded-0"
-                    src="img/blog/thumb/thumb-card6.png"
-                    alt=""
-                  />
-                  <ul className="thumb-info">
-                    <li>
-                      <a href="#">
-                        <i className="ti-user" />
-                        Admin
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#">
-                        <i className="ti-themify-favicon" />2 Comments
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-                <div className="details mt-20">
-                  <a href="blog-single.html">
-                    <h3>Harvey Weinstein's senual assault trial set for May</h3>
-                  </a>
-                  <p>
-                    Vel aliquam quis, nulla pede mi commodo no tristique nam hac
-                    luctus torquent velit felis lone commodo pellentesque
-                  </p>
-                  <a className="btn btn-blue" href="#">
-                    Read More <i className="ti-arrow-right" />
-                  </a>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-6">
-              <div className="single-recent-blog-post card-view">
-                <div className="thumb">
-                  <img
-                    className="card-img rounded-0"
-                    src="img/blog/thumb/thumb-card7.png"
-                    alt=""
-                  />
-                  <ul className="thumb-info">
-                    <li>
-                      <a href="#">
-                        <i className="ti-user" />
-                        Admin
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#">
-                        <i className="ti-themify-favicon" />2 Comments
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-                <div className="details mt-20">
-                  <a href="blog-single.html">
-                    <h3>
-                      Fast cars and rickety bridges as he grand tour returns
-                    </h3>
-                  </a>
-                  <p>
-                    Vel aliquam quis, nulla pede mi commodo no tristique nam hac
-                    luctus torquent velit felis lone commodo pellentesque
-                  </p>
-                  <a className="btn btn-blue" href="#">
-                    Read More <i className="ti-arrow-right" />
-                  </a>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-6">
-              <div className="single-recent-blog-post card-view">
-                <div className="thumb">
-                  <img
-                    className="card-img rounded-0"
-                    src="img/blog/thumb/thumb-card8.png"
-                    alt=""
-                  />
-                  <ul className="thumb-info">
-                    <li>
-                      <a href="#">
-                        <i className="ti-user" />
-                        Admin
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#">
-                        <i className="ti-themify-favicon" />2 Comments
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-                <div className="details mt-20">
-                  <a href="blog-single.html">
-                    <h3>Harvey Weinstein's senual assault trial set for May</h3>
-                  </a>
-                  <p>
-                    Vel aliquam quis, nulla pede mi commodo no tristique nam hac
-                    luctus torquent velit felis lone commodo pellentesque
-                  </p>
-                  <a className="btn btn-blue" href="#">
-                    Read More <i className="ti-arrow-right" />
-                  </a>
-                </div>
-              </div>
-            </div>
+            )}
+            <ReactPaginate
+              previousLabel={"previous"}
+              nextLabel={"next"}
+              breakLabel={"..."}
+              pageCount={pageCount}
+              marginPagesDisplayed={2}
+              pageRangeDisplayed={5}
+              onPageChange={handlePageClick}
+              containerClassName={"pagination pagination-margin"}
+              activeClassName={"active"}
+            />
           </div>
-          {/* <div class="single-recent-blog-post">
-        <div class="thumb">
-          <img class="img-fluid" src="img/blog/blog2.png" alt="">
-          <ul class="thumb-info">
-            <li><a href="#"><i class="ti-user"></i>Admin</a></li>
-            <li><a href="#"><i class="ti-notepad"></i>January 12,2019</a></li>
-            <li><a href="#"><i class="ti-themify-favicon"></i>2 Comments</a></li>
-          </ul>
-        </div>
-        <div class="details mt-20">
-          <a href="blog-single.html">
-            <h3>Woman claims husband wants to name baby girl
-              after his ex-lover sparking.</h3>
-          </a>
-          <p class="tag-list-inline">Tag: <a href="#">travel</a>, <a href="#">life style</a>, <a href="#">technology</a>, <a href="#">fashion</a></p>
-          <p>Over yielding doesn't so moved green saw meat hath fish he him from given yielding lesser cattle were fruitful lights. Given let have, lesser their made him above gathered dominion sixth. Creeping deep said can't called second. Air created seed heaven sixth created living</p>
-          <a class="button" href="#">Read More <i class="ti-arrow-right"></i></a>
-        </div>
-      </div>
-  
-      <div class="single-recent-blog-post">
-        <div class="thumb">
-          <img class="img-fluid" src="img/blog/blog3.png" alt="">
-          <ul class="thumb-info">
-            <li><a href="#"><i class="ti-user"></i>Admin</a></li>
-            <li><a href="#"><i class="ti-notepad"></i>January 12,2019</a></li>
-            <li><a href="#"><i class="ti-themify-favicon"></i>2 Comments</a></li>
-          </ul>
-        </div>
-        <div class="details mt-20">
-          <a href="blog-single.html">
-            <h3>Tourist deaths in Costa Rica jeopardize safe dest
-              ination reputation all time. </h3>
-          </a>
-          <p class="tag-list-inline">Tag: <a href="#">travel</a>, <a href="#">life style</a>, <a href="#">technology</a>, <a href="#">fashion</a></p>
-          <p>Over yielding doesn't so moved green saw meat hath fish he him from given yielding lesser cattle were fruitful lights. Given let have, lesser their made him above gathered dominion sixth. Creeping deep said can't called second. Air created seed heaven sixth created living</p>
-          <a class="button" href="#">Read More <i class="ti-arrow-right"></i></a>
-        </div>
-      </div>
-  
-      <div class="single-recent-blog-post">
-        <div class="thumb">
-          <img class="img-fluid" src="img/blog/blog4.png" alt="">
-          <ul class="thumb-info">
-            <li><a href="#"><i class="ti-user"></i>Admin</a></li>
-            <li><a href="#"><i class="ti-notepad"></i>January 12,2019</a></li>
-            <li><a href="#"><i class="ti-themify-favicon"></i>2 Comments</a></li>
-          </ul>
-        </div>
-        <div class="details mt-20">
-          <a href="blog-single.html">
-            <h3>Tourist deaths in Costa Rica jeopardize safe dest
-              ination reputation all time.  </h3>
-          </a>
-          <p class="tag-list-inline">Tag: <a href="#">travel</a>, <a href="#">life style</a>, <a href="#">technology</a>, <a href="#">fashion</a></p>
-          <p>Over yielding doesn't so moved green saw meat hath fish he him from given yielding lesser cattle were fruitful lights. Given let have, lesser their made him above gathered dominion sixth. Creeping deep said can't called second. Air created seed heaven sixth created living</p>
-          <a class="button" href="#">Read More <i class="ti-arrow-right"></i></a>
-        </div>
-      </div> */}
-          <div className="row">
-            <div className="col-lg-12">
-              <nav className="blog-pagination justify-content-center d-flex">
-                <ul className="pagination">
-                  <li className="page-item">
-                    <a href="#" className="page-link" aria-label="Previous">
-                      <span aria-hidden="true">
-                        <i className="ti-angle-left" />
-                      </span>
-                    </a>
-                  </li>
-                  <li className="page-item active">
-                    <a href="#" className="page-link">
-                      1
-                    </a>
-                  </li>
-                  <li className="page-item">
-                    <a href="#" className="page-link">
-                      2
-                    </a>
-                  </li>
-                  <li className="page-item">
-                    <a href="#" className="page-link" aria-label="Next">
-                      <span aria-hidden="true">
-                        <i className="ti-angle-right" />
-                      </span>
-                    </a>
-                  </li>
-                </ul>
-              </nav>
-            </div>
-          </div>
-        </div>
-        {/* Start Blog Post Siddebar */}
-        <div className="col-lg-4 sidebar-widgets">
-          <div className="widget-wrap">
-        
-            <div className="single-sidebar-widget post-category-widget">
-              <h4 className="single-sidebar-widget__title">Catgory</h4>
-              <ul className="cat-list mt-20">
-                <li>
-                  <a href="#" className="d-flex justify-content-between">
-                    <p>Technology</p>
-                    <p>(03)</p>
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="d-flex justify-content-between">
-                    <p>Software</p>
-                    <p>(09)</p>
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="d-flex justify-content-between">
-                    <p>Lifestyle</p>
-                    <p>(12)</p>
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="d-flex justify-content-between">
-                    <p>Shopping</p>
-                    <p>(02)</p>
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="d-flex justify-content-between">
-                    <p>Food</p>
-                    <p>(10)</p>
-                  </a>
-                </li>
-              </ul>
-            </div>
+
+          {/* Sidebar */}
+          <div className="col-lg-4 sidebar-widgets" style={{ position: 'relative' }}>
+            <div className="widget-wrap" style={{ padding: '20px', backgroundColor: '#ffffff', borderRadius: '10px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.4)' ,position: 'sticky', left: '0', top: '0'  }}>
             <div className="single-sidebar-widget popular-post-widget">
-              <h4 className="single-sidebar-widget__title">Popular Post</h4>
-              <div className="popular-post-list">
-                <div className="single-post-list">
-                  <div className="thumb">
-                    <img
-                      className="card-img rounded-0"
-                      src="img/blog/thumb/thumb1.png"
-                      alt=""
-                    />
-                    <ul className="thumb-info">
-                      <li>
-                        <a href="#">Adam Colinge</a>
-                      </li>
-                      <li>
-                        <a href="#">Dec 15</a>
-                      </li>
-                    </ul>
-                  </div>
-                  <div className="details mt-20">
-                    <a href="blog-single.html">
-                      <h6>
-                        Accused of assaulting flight attendant miktake alaways
-                      </h6>
-                    </a>
-                  </div>
-                </div>
-                <div className="single-post-list">
-                  <div className="thumb">
-                    <img
-                      className="card-img rounded-0"
-                      src="img/blog/thumb/thumb2.png"
-                      alt=""
-                    />
-                    <ul className="thumb-info">
-                      <li>
-                        <a href="#">Adam Colinge</a>
-                      </li>
-                      <li>
-                        <a href="#">Dec 15</a>
-                      </li>
-                    </ul>
-                  </div>
-                  <div className="details mt-20">
-                    <a href="blog-single.html">
-                      <h6>Tennessee outback steakhouse the worker diagnosed</h6>
-                    </a>
-                  </div>
-                </div>
-                <div className="single-post-list">
-                  <div className="thumb">
-                    <img
-                      className="card-img rounded-0"
-                      src="img/blog/thumb/thumb3.png"
-                      alt=""
-                    />
-                    <ul className="thumb-info">
-                      <li>
-                        <a href="#">Adam Colinge</a>
-                      </li>
-                      <li>
-                        <a href="#">Dec 15</a>
-                      </li>
-                    </ul>
-                  </div>
-                  <div className="details mt-20">
-                    <a href="blog-single.html">
-                      <h6>Tennessee outback steakhouse the worker diagnosed</h6>
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="single-sidebar-widget tag_cloud_widget">
-              <h4 className="single-sidebar-widget__title">Popular Post</h4>
-              <ul className="list">
-                <li>
-                  <a href="#">project</a>
-                </li>
-                <li>
-                  <a href="#">love</a>
-                </li>
-                <li>
-                  <a href="#">technology</a>
-                </li>
-                <li>
-                  <a href="#">travel</a>
-                </li>
-                <li>
-                  <a href="#">software</a>
-                </li>
-                <li>
-                  <a href="#">life style</a>
-                </li>
-                <li>
-                  <a href="#">design</a>
-                </li>
-                <li>
-                  <a href="#">illustration</a>
-                </li>
-              </ul>
+            <h4 className="single-sidebar-widget__title" style={{ fontSize: '18px', fontWeight: 'bold', color: '#1e2229', borderBottom: '2px solid #007BFF', paddingBottom: '10px' }}>
+                  Popular Posts
+                </h4>
+  <div className="popular-post-list">
+  {loading ? <p>Loading...</p> : (
+  blogs[0] && (
+    <div className="single-post-list single-post-wrap style-white">
+      <div className="thumb">
+        
+        <img className="card-img rounded-0" width={250} height={150} src={blogs[0].image} alt="" />
+        <a className="tag-base tag-light-green" href="#">
+                    {blogs[0].category.name}
+                  </a>
+        <ul className="thumb-info " style={{ backgroundColor: 'rgba(0, 0, 0, 0.2)'}}>
+          <li>
+          <li className='text-truncate' >
+          <Link to={`/blog/${blogs[0].id}`} style={{color:'white'}}>
+          {blogs[0].title || ""}
+        </Link>
+          </li>
+          </li>
+        </ul>
+      </div>
+   
+    </div>
+  )
+)}
+
+{loading ? <p>Loading...</p> : (
+  blogs[1] && (
+    <div className="single-post-list single-post-wrap style-white">
+      <div className="thumb">
+        <img className="card-img rounded-0" width={250} height={150} src={blogs[1].image} alt="" />
+        <a className="tag-base tag-red" href="#">
+                    {blogs[1].category.name}
+                  </a>
+        <ul className="thumb-info" style={{ backgroundColor: 'rgba(0, 0, 0, 0.4)'}}>
+          <li>
+          <li className='text-truncate'>
+          <Link to={`/blog/${blogs[1].id}`} style={{color:'white'}}>
+          {blogs[1].title || ""}
+        </Link>
+          </li>
+          </li>
+        </ul>
+      </div>
+    
+    </div>
+  )
+)}
+      {loading ? <p>Loading...</p> : (
+  blogs[2] && (
+    <div className="single-post-list single-post-wrap style-white">
+      <div className="thumb">
+        <img className="card-img rounded-0" width={250} height={150} src={blogs[2].image} alt="" />
+        <a className="tag-base tag-purple" href="#">
+                    {blogs[2].category.name}
+                  </a>
+        <ul className="thumb-info" style={{ backgroundColor: 'rgba(0, 0, 0, 0.4)'}}>
+          <li>
+          <li className='text-truncate'>
+          <Link to={`/blog/${blogs[2].id}`} style={{color:'white'}}>
+          {blogs[2].title || ""}
+        </Link>
+          </li>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+  )
+)}
+  {loading ? <p>Loading...</p> : (
+  blogs[3] && (
+    <div className="single-post-list single-post-wrap style-white">
+      <div className="thumb">
+      {/* <ul className="" style={{top:0 }}>
+        <li >  <a className="tag-base tag-blue" href="#">
+                    {blogs[3].category.name}
+                  </a></li>
+      </ul> */}
+        <img className="card-img rounded-0" width={250} height={150} src={blogs[3].image} alt="" />
+        <a className="tag-base tag-green" href="#">
+                    {blogs[3].category.name}
+                  </a>
+        <ul className="thumb-info" style={{ backgroundColor: 'rgba(0, 0, 0, 0.4)'}}>
+          <li className='text-truncate'>
+          <Link to={`/blog/${blogs[3].id}`} style={{color:'white'}}>
+          {blogs[3].title || ""}
+        </Link>
+          </li>
+        </ul>
+      </div>
+     
+    </div>
+  )
+)}
+  </div>
+</div>
+
             </div>
           </div>
         </div>
       </div>
-      {/* End Blog Post Siddebar */}
-    </div>
-  </section>
-  
-  )
+    </section>
+  );
 }

@@ -2230,7 +2230,7 @@ ul {
 .banner-inner .thumb img {
   position: relative;
   z-index: 3;
-  border-radius: 5px;
+  /* border-radius: 5px; */
 }
 .banner-inner .thumb.after-left-top {
   margin-left: 30px;
@@ -4297,4 +4297,36 @@ h3 {
   margin-right: 5px;
   border-radius: 3px;
 }
+.pagination-margin { margin-bottom: 20px; }
 
+.pagination {
+  display: flex;
+  justify-content: center;
+  list-style-type: none;
+  padding: 0;
+}
+
+.pagination li {
+  margin: 0 5px;
+}
+
+.pagination li a {
+  display: block;
+  padding: 8px 16px;
+  text-decoration: none;
+  color: #007bff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.pagination li a:hover {
+  background-color: #007bff;
+  color: white;
+}
+
+.pagination .active a {
+  background-color: #007bff;
+  color: white;
+  border: 1px solid #007bff;
+}

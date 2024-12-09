@@ -50,14 +50,10 @@ export const createBlog = async (BlogDetails) => {
 
 //user update blog
 
-export const updateBlog = async (id, formData) => {
+export const updateBlog = async (id, blogDetails) => {
   try {
-    const response = await axios.put(`${Api_base_url}blog/${id}/update`, formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
-    console.log(formData);
+    const response = await axios.put(`${Api_base_url}blog/${id}/update`, blogDetails);
+    console.log(blogDetails);
     console.log('Response:', response.data);
     return response.data;
   } catch (e) {
@@ -123,13 +119,11 @@ try{
 export const getBlogs = async (filters = {}) => {
   try {
     // Dynamically append filters to the URL
-    const { categoryId } = filters;
+    const { category } = filters; // Make sure the property name matches what you expect in the backend
     let url = `${Api_base_url}blog`;
 
-    if (categoryId) {
-      url += "?";
-      if (categoryId) url += `categoryId=${categoryId}&`;
-
+    if (category) {
+      url += `?category=${category}`;
     }
 
     const response = await axios.get(url);
@@ -152,13 +146,46 @@ return response.data
   }
 }
 
+export const fetchHomeData = async () => {
+  try {
+    const response = await axios.get(`${Api_base_url}home`);
+    return response.data;
+  } catch (error) {
+    throw new Error("Failed to fetch home data");
+  }
+};
+
+export const fetchFavorites = async (userId) => {
+  try {
+    const response = await axios.get(`${Api_base_url}favorites/${userId}`);
+    return new Set(response.data.favoriteBlogs.map((blog) => blog.id));
+  } catch (error) {
+    throw new Error("Failed to fetch favorites");
+  }
+};
+
+export const toggleFavorite = async (userId, blogId, isFavorite) => {
+  try {
+    if (isFavorite) {
+      await axios.delete(`${Api_base_url}favorites/${userId}/${blogId}`);
+    } else {
+      await axios.post(`${Api_base_url}favorites/${userId}/${blogId}`);
+    }
+  } catch (error) {
+    throw new Error("Failed to toggle favorite");
+  }
+};
+
+
 export default {
   getUserData,
   updateUserData,
   createBlog,
   getCatigories,
   updateBlog,
-  deleteblog
+  deleteblog,
+  fetchFavorites,
+  toggleFavorite
 };
 
 

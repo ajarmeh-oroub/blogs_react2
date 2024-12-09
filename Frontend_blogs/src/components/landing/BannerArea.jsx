@@ -1,22 +1,37 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-export default function BannerArea({data, loading, error}) {
-
-  // first blog
-  const bannerBlogs = data.map(function (blog) {
-    return (
-      <div className="row" key={blog.id}>
-        <div className="col-lg-6 ">
+export default function BannerArea({ data, favorites, toggleFavorite }) {
+  const bannerBlogs = data.map((blog) => (
+    <React.Fragment key={blog.id}>
+      <div className="row">
+        <div className="col-lg-6">
           <div className="thumb after-left-top">
             <img
               src={blog.image}
               alt="img"
-              style={{ height: "400px", width: "900px" ,
-                transform: "translate(20px, 20px)", // Adjust these values to translate the element
-                position: "relative", 
-                borderRadius:"8px"// Ensure it respects the transform
-            }}
+              style={{
+                height: "400px",
+                width: "900px",
+                transform: "translate(20px, 20px)",
+                position: "relative",
+                borderRadius: "8px",
+              }}
+            />
+            <i
+              className={`fa fa-heart`}
+              style={{
+                color: favorites.has(blog.id) ? "red" : "white",
+                cursor: "pointer",
+                marginLeft: "10px",
+                fontSize: "24px",
+                position: "absolute",
+                top: "40px",
+                right: "20px",
+                zIndex: 3,
+                textShadow: "#000 1px 1px 4px",
+              }}
+              onClick={() => toggleFavorite(blog.id)}
             />
           </div>
         </div>
@@ -25,8 +40,10 @@ export default function BannerArea({data, loading, error}) {
             <div className="post-meta-single">
               <ul>
                 <li>
-                  <a className="tag-base tag-blue" href="#">
-                    {/* {blog.category.name} */}
+
+                  <a className="tag-base tag-blue" style={{width:95 , height:40 , fontSize:15}}>
+                    {blog.category.name}
+
                   </a>
                 </li>
                 <li className="date">
@@ -41,6 +58,7 @@ export default function BannerArea({data, loading, error}) {
           </div>
         </div>
       </div>
+
     );
   });
 
@@ -77,23 +95,63 @@ export default function BannerArea({data, loading, error}) {
 
 
 
-  return (
-    <>
+     
+    </React.Fragment>
+  ));
 
-      {/* banner area start */}
-      <div className="banner-area banner-inner-1 bg-black" id="banner">
-        {/* banner area start */}
-        <div className="banner-inner pt-5">
-          <div className="container">{bannerBlogs[0]}</div>
-        </div>
-        {/* banner area end */}
-        <div className="container">
-          <div className="row">
-            {subBannerBlogs}
-          </div>
+
+  return (
+    <div className="banner-area banner-inner-1 bg-black" id="banner">
+      <div className="banner-inner pt-5">
+        <div className="container">{bannerBlogs[0]}</div>
+      </div>
+      <div className="container">
+        <div className="row">
+          {data.slice(1, 5).map((blog) => (
+            <div className="col-lg-3 col-sm-6" key={blog.id}>
+              <div className="single-post-wrap style-white">
+                <div className="thumb">
+                  <img src={blog.image} alt="img" style={{ height: "200px", width: "450px" }} />
+                  <i
+                    className={`fa fa-heart`}
+                    style={{
+                      color: favorites.has(blog.id) ? "red" : "white",
+                      cursor: "pointer",
+                      marginLeft: "10px",
+                      fontSize: "24px",
+                      position: "absolute",
+                      top: "20px",
+                      right: "10px",
+                      zIndex: 3,
+                      textShadow: "#000 1px 1px 4px",
+                    }}
+                    onClick={() => toggleFavorite(blog.id)}
+                  />
+                  <a className="tag-base tag-blue" href="#">
+                    {blog.category.name}
+                  </a>
+                </div>
+                <div className="details">
+                  <h6 className="title">
+                    <Link to={`/blog/${blog.id}`}>
+                      {blog.title}
+                    </Link>
+                  </h6>
+                  <div className="post-meta-single mt-3">
+                    <ul>
+                      <li>
+                        <i className="fa fa-clock-o" />
+                        {new Date(blog.created_at).toLocaleDateString()}
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
-      {/* banner area end */}
-    </>
+    </div>
   );
 }
+

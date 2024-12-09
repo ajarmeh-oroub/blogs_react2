@@ -1,9 +1,14 @@
-import React from 'react'
-import BannerArea from './BannerArea'
-import PostGrid from './PostGrid'
-import PostLatest from './PostLatest'
-import PostTrending from './PostTrending'
-import { useEffect, useState } from "react";
+
+import React, { useEffect, useState } from 'react';
+import BannerArea from './BannerArea';
+import PostGrid from './PostGrid';
+import PostTrending from './PostTrending';
+import { fetchHomeData, fetchFavorites, toggleFavorite as toggleFavoriteApi } from '../../Services/Api.jsx';
+
+
+
+import PostLatest from './PostLatest';
+
 
 
 
@@ -11,19 +16,18 @@ export default function Landing() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [favorites, setFavorites] = useState(new Set()); // Set to manage favorites
+
+  const userId = 1; // Replace with the actual user ID
 
   useEffect(() => {
     const fetchData = async () => {
-      const url = "http://localhost:8000/api/home";
-
       try {
-        const response = await fetch(url);
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
+        const homeData = await fetchHomeData();
+        const favoriteIds = await fetchFavorites(userId);
 
-        const jsonData = await response.json();
-        setData(jsonData);
+        setData(homeData);
+        setFavorites(favoriteIds);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -35,21 +39,125 @@ export default function Landing() {
   }, []);
 
 
-  if (loading) return <div>Loading...</div>;
+  const toggleFavorite = async (blogId) => {
+    try {
+      const isFavorite = favorites.has(blogId);
+      await toggleFavoriteApi(userId, blogId, isFavorite);
+
+      setFavorites((prev) => {
+        const updated = new Set(prev);
+        if (isFavorite) {
+          updated.delete(blogId);
+        } else {
+          updated.add(blogId);
+        }
+        return updated;
+      });
+    } catch (err) {
+      console.error("Error toggling favorite:", err.message);
+    }
+  };
+
+
+  if (loading) return (
+    <div className="preloader" id="preloader">
+      <div className="preloader-inner">
+        <div className="spinner">
+          <div className="dot1"></div>
+          <div className="dot2"></div>
+        </div>
+      </div>
+    </div>
+  );
+
   if (error) return <div>Error: {error}</div>;
 
   const latest = data.latest.slice(1, 5);
   const grid = data.latest.slice(5, 13);
 
 
-
-
   return (
-    <>
-      <BannerArea data={data.latest}/>
-      <PostTrending trends={data.trends} latest={latest}/>
-      {/* <PostLatest /> */}
-      <PostGrid grid={grid}/>
-    </>
-  )
+    <span style={{position:'relative'}}>
+      <BannerArea 
+        data={data.latest} 
+        favorites={favorites} 
+        toggleFavorite={toggleFavorite} 
+      />
+      <PostTrending 
+        trends={data.trends} 
+        latest={latest} 
+        favorites={favorites} 
+        toggleFavorite={toggleFavorite} 
+      />
+              <CreateWithAISection />
+              <DiscountSection />
+      <PostGrid 
+        grid={grid} 
+        favorites={favorites} 
+        toggleFavorite={toggleFavorite} 
+      />
+  
+    </span>
+)
+
+}
+
+
+
+function CreateWithAISection() {
+  return (
+    <section className="create-with-ai-section" style={{ padding: '50px 0', backgroundColor: '#102950', height: '600px' }}>
+      <div className="container">
+        <div className="row">
+          <div className="col-lg-6">
+            <img
+              src="https://images.unsplash.com/photo-1728755696561-f8fd6ff03630?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+              alt="Create with AI"
+              className="img-fluid rounded"
+              style={{ width: '100%', borderRadius: '8px' }}
+            />
+          </div>
+          <div className="col-lg-6">
+            <h2 style={{ color: 'white' }}>Create with <span style={{ color: '#FFBE00' }}>AI</span></h2>
+            <p style={{ color: 'white' }}>
+              At <span style={{ color: '#FFBE00' }}>Next</span> Page, we empower you to unleash your creativity. Write insightful articles and generate stunning images using our AI-powered tools.
+            </p>
+            <p style={{ marginBottom: '15px', color: 'white' }}>
+              Whether you are a seasoned writer or just starting, our platform provides the resources you need to share your thoughts and visuals with the world.
+            </p>
+            <p style={{ marginBottom: '15px', color: 'white' }}>
+              Our AI tools make it easy to create professional-quality content and eye-catching images effortlessly. Join our community and start creating today!
+            </p>
+            <a href="/create" className="btn btn-base" style={{ padding: '', fontSize: '16px' }}>Start Creating</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+function DiscountSection() {
+  return (
+<section className="chatbot-section" style={{ padding: '30px 20px', background: 'linear-gradient(70deg, #6aafe6 0%, #097BED 100%)', color: '#ffffff', height: '230px', width: '90%', position: 'relative', top: '-100px', left: '75px' }}>
+  <div className="container">
+    <div className="row">
+      <div className="col-lg-8">
+        <h2 style={{ color: '#FFBE00' }}>Interactive Q&A</h2>
+        <p style={{ color: '#ffffff' }}>
+          Engage with our articles through our interactive Q&A chatbot. Ask questions, get insights, and discuss the content directly with our AI-powered assistant. Join us now and enhance your reading experience!
+        </p>
+      </div>
+      <div className="col-lg-4">
+        <img
+          src="https://images.unsplash.com/photo-1518770660439-4636190af475?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
+          alt="Interactive Q&A"
+          className="img-fluid rounded"
+          style={{ width: '250px', borderRadius: '8px'}}
+        />
+      </div>
+    </div>
+  </div>
+</section>
+
+
+  );
 }

@@ -1,19 +1,42 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import axios from "axios";
-import { getCatigories } from "../Services/Api";
-import BlogSummarizer from "./BlogSummary";
+import { fetchFavorites, toggleFavorite, getCatigories, getBlogs } from "../Services/API";
+import GetAnswerFromArticle from "./GetAnswerFromArticle";
 
 export default function BlogDetails() {
-  const [isSummary, setSummary] = useState(true);
   const { id } = useParams(); // Blog ID
   const [blog, setBlog] = useState(null); // Blog details
   const [comments, setComments] = useState([]); // Blog comments
   const [newComment, setNewComment] = useState(""); // New comment input
   const [name, setName] = useState(""); // User's name for the comment
   const [email, setEmail] = useState(""); // Optional email
+  const [blogs, setBlogs] = useState([]);
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
+ 
+  const [isFavorite, setIsFavorite] = useState(false); // Track favorite status
   const [categories, setCategories] = useState([]);
+  const [filteredBlogs, setFilteredBlogs] = useState([]); // Blogs filtered by category
+  const [selectedCategory, setSelectedCategory] = useState(""); // Selected category for filtering
+
+  useEffect(() => {
+    const fetchBlogs = async () => {
+      setLoading(true);
+      try {
+        const filters = { categoryId: selectedCategory };
+        const fetchedBlogs = await getBlogs(filters);
+        setBlogs(fetchedBlogs || []);
+      } catch (err) {
+        console.error('Error fetching blogs:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchBlogs();
+  }, [selectedCategory]);
+
+
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -30,43 +53,78 @@ export default function BlogDetails() {
   }, []);
 
   useEffect(() => {
-    // Fetch blog details
-    axios
-      .get(`http://localhost:8000/api/blogs/${id}`)
-      .then((response) => setBlog(response.data))
-      .catch((error) => setError(error.message));
+    const fetchBlogDetails = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8000/api/blogs/${id}`);
+        setBlog(response.data);
+      } catch (error) {
+        setError(error.message);
+      }
+    };
 
-    // Fetch comments related to the blog
-    axios
-      .get(`http://localhost:8000/api/blogs/${id}/comments`)
-      .then((response) => setComments(response.data))
-      .catch((error) => setError(error.message));
+    const fetchComments = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8000/api/blogs/${id}/comments`);
+        setComments(response.data);
+      } catch (error) {
+        setError(error.message);
+      }
+    };
+
+    fetchBlogDetails();
+    fetchComments();
   }, [id]);
+
+  useEffect(() => {
+    // Fetch favorite status
+    const fetchFavoriteStatus = async () => {
+      try {
+        const userId = 1; // Replace with logged-in user's ID
+        const favorites = await fetchFavorites(userId);
+        setIsFavorite(favorites.has(parseInt(id)));
+      } catch (error) {
+        console.error("Error fetching favorite status:", error);
+      }
+    };
+
+    fetchFavoriteStatus();
+  }, [id]);
+
+  const fetchFilteredBlogs = async () => {
+    if (selectedCategory) {
+      try {
+        const response = await axios.get(`http://localhost:8000/api/blogs?category=${selectedCategory}`);
+        setFilteredBlogs(response.data);
+      } catch (error) {
+        console.error("Error fetching filtered blogs:", error);
+      }
+    } else {
+      setFilteredBlogs([]);
+    }
+  };
+
+  useEffect(() => {
+    fetchFilteredBlogs();
+  }, [selectedCategory]);
 
   const handleCommentSubmit = (e) => {
     e.preventDefault();
 
-    // Validate form inputs
     if (!newComment || !name) {
       alert("Please fill in both your name and comment.");
       return;
     }
 
-    // Construct the request payload
     const payload = {
       comment: newComment,
       name: name,
       email: email || null, // Optional email
     };
 
-    // Send new comment to the API using Axios
     axios
       .post(`http://localhost:8000/api/blogs/${id}/comments`, payload)
       .then((response) => {
-        // Update comments list
         setComments((prev) => [...prev, response.data]);
-
-        // Reset form inputs
         setNewComment("");
         setName("");
         setEmail("");
@@ -77,7 +135,21 @@ export default function BlogDetails() {
       });
   };
 
-  // Conditional rendering for error or loading states
+  const handleToggleFavorite = async () => {
+    try {
+      const userId = 1; // Replace with logged-in user's ID
+      await toggleFavorite(userId, parseInt(id), isFavorite);
+      setIsFavorite(!isFavorite);
+    } catch (error) {
+      console.error("Error toggling favorite status:", error);
+      alert("Failed to update favorite status. Please try again.");
+    }
+  };
+
+  const handleCategoryClick = (categoryId) => {
+    setSelectedCategory(categoryId);
+  };
+
   if (error) {
     return <div className="container">Error: {error}</div>;
   }
@@ -90,82 +162,55 @@ export default function BlogDetails() {
     <section className="blog-post-area section-margin">
       <div className="container">
         <div className="row">
-          {/* Blog Details */}
           <div className="col-lg-8">
             <div className="main_blog_details">
-              <img className="img-fluid" src={blog.image} alt={blog.title} />
+              <img  className="img-fluid" width={750} height={600} src={blog.image} alt={blog.title} />
               <h4>{blog.title}</h4>
               <div className="user_details">
-                <div className="float-left">{blog.categories}</div>
+                <div className="float-left">{blog.category.name}</div>
                 <div className="float-right mt-sm-0 mt-3">
                   <div className="media">
                     <div className="media-body">
-                      <h5>{blog.author}</h5>
+                      <h5>{blog.user ? blog.user.name : "Unknown"}</h5>
                       <p>{new Date(blog.created_at).toLocaleString()}</p>
                     </div>
                     <div className="d-flex">
-                      <img
-                        width={42}
-                        height={42}
-                        src="img/blog/user-img.png"
-                        alt=""
+                      <i
+                        className={`fa fa-heart`}
+                        style={{
+                          color: isFavorite ? "red" : "white",
+                          cursor: "pointer",
+                          marginLeft: "10px",
+                          fontSize: "34px",
+                          position: "absolute",
+                          top: "30px",
+                          right: "30px",
+                          zIndex: 3,
+                          textShadow: "#000 1px 1px 4px",
+                        }}
+                        onClick={handleToggleFavorite}
                       />
+                      <img width={42} height={42} style={{borderRadius:50 }} src="/assets/img/user.jpg" alt="user" />
                     </div>
                   </div>
                 </div>
               </div>
-              <p>
-        {blog.article}
-      </p>
- 
-      {isSummary && (
-        <div style={{ marginTop: "20px" }}>
-          <BlogSummarizer blogarticle={blog.article} />
-        </div>
-      )}
-    </div>
+              <p style={{width:740}}>{blog.article}</p>
 
-            {/* Add Comment Form */}
+              {/* {isSummary && <div style={{ marginTop: "20px" }}><BlogSummarizer blogarticle={blog.article} /></div>} */}
+              <GetAnswerFromArticle article={blog.article} />
+            </div>
+
             <div className="comment-form">
               <h4>Leave a Comment</h4>
               <form onSubmit={handleCommentSubmit}>
-                {/* Name Input */}
-                <input
-                  type="text"
-                  className="form-control"
-                  placeholder="Your Name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  required
-                />
-
-                {/* Email Input */}
-                <input
-                  type="email"
-                  className="form-control mt-2"
-                  placeholder="Your Email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-
-                {/* Comment Textarea */}
-                <textarea
-                  className="form-control mt-2"
-                  rows="4"
-                  placeholder="Your Comment"
-                  value={newComment}
-                  onChange={(e) => setNewComment(e.target.value)}
-                  required
-                ></textarea>
-
-                {/* Submit Button */}
-                <button type="submit" className="btn btn-primary mt-2">
-                  Submit
-                </button>
+                <input type="text" className="form-control" placeholder="Your Name" value={name} onChange={(e) => setName(e.target.value)} required />
+                <input type="email" className="form-control mt-2" placeholder="Your Email" value={email} onChange={(e) => setEmail(e.target.value)} />
+                <textarea className="form-control mt-2" rows="4" placeholder="Your Comment" value={newComment} onChange={(e) => setNewComment(e.target.value)} required></textarea>
+                <button type="submit" className="btn btn-primary mt-2">Submit</button>
               </form>
             </div>
 
-            {/* Comments Section */}
             <div className="comments-area">
               <h4>{comments.length} Comments</h4>
               {comments.length === 0 ? (
@@ -188,28 +233,117 @@ export default function BlogDetails() {
             </div>
           </div>
 
-          {/* Start Blog Post Sidebar */}
-          <div className="col-lg-4 sidebar-widgets">
-            <div className="widget-wrap" style={{ padding: '20px', backgroundColor: '#ffffff', borderRadius: '10px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}>
-              <div className="single-sidebar-widget post-category-widget" style={{ marginBottom: '30px' }}>
-                <h4 className="single-sidebar-widget__title" style={{ fontSize: '18px', fontWeight: 'bold', color: '#1e2229', borderBottom: '2px solid #007BFF', paddingBottom: '10px' }}>
-                  Category
+       
+     
+            <div className="col-lg-4 sidebar-widgets" style={{ position: 'relative' }}>
+            <div className="widget-wrap" style={{ padding: '20px', backgroundColor: '#ffffff', borderRadius: '10px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.4)' ,position: 'sticky', left: '0', top: '0'  }}>
+            <div className="single-sidebar-widget popular-post-widget">
+            <h4 className="single-sidebar-widget__title" style={{ fontSize: '18px', fontWeight: 'bold', color: '#1e2229', borderBottom: '2px solid #007BFF', paddingBottom: '10px' }}>
+                  Popular Posts
                 </h4>
-                <ul className="cat-list mt-20" style={{ listStyle: 'none', padding: 0, color: '#555' }}>
-                  {categories.map((category) => (
-                    <li key={category.id} style={{ marginBottom: '10px' }}>
-                      <a href="#" className="d-flex justify-content-between" style={{ textDecoration: 'none', color: '#1e2229', fontWeight: '500', transition: 'color 0.3s' }}>
-                        <p>{category.name}</p>
-                        <p>{category.post_count}</p>
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+  <div className="popular-post-list">
+  {loading ? <p>Loading...</p> : (
+  blogs[0] && (
+    <div className="single-post-list single-post-wrap style-white">
+      <div className="thumb">
+        
+        <img className="card-img rounded-0" width={250} height={150} src={blogs[0].image} alt="" />
+        <a className="tag-base tag-light-green" href="#">
+                    {blogs[0].category.name}
+                  </a>
+        <ul className="thumb-info " style={{ backgroundColor: 'rgba(0, 0, 0, 0.2)'}}>
+          <li>
+          <li className='text-truncate' >
+          <Link to={`/blog/${blogs[0].id}`} style={{color:'white'}}>
+          {blogs[0].title || ""}
+        </Link>
+          </li>
+          </li>
+        </ul>
+      </div>
+   
+    </div>
+  )
+)}
+
+{loading ? <p>Loading...</p> : (
+  blogs[1] && (
+    <div className="single-post-list single-post-wrap style-white">
+      <div className="thumb">
+        <img className="card-img rounded-0" width={250} height={150} src={blogs[1].image} alt="" />
+        <a className="tag-base tag-red" href="#">
+                    {blogs[1].category.name}
+                  </a>
+        <ul className="thumb-info" style={{ backgroundColor: 'rgba(0, 0, 0, 0.4)'}}>
+          <li>
+          <li className='text-truncate'>
+          <Link to={`/blog/${blogs[1].id}`} style={{color:'white'}}>
+          {blogs[1].title || ""}
+        </Link>
+          </li>
+          </li>
+        </ul>
+      </div>
+    
+    </div>
+  )
+)}
+      {loading ? <p>Loading...</p> : (
+  blogs[2] && (
+    <div className="single-post-list single-post-wrap style-white">
+      <div className="thumb">
+        <img className="card-img rounded-0" width={250} height={150} src={blogs[2].image} alt="" />
+        <a className="tag-base tag-purple" href="#">
+                    {blogs[2].category.name}
+                  </a>
+        <ul className="thumb-info" style={{ backgroundColor: 'rgba(0, 0, 0, 0.4)'}}>
+          <li>
+          <li className='text-truncate'>
+          <Link to={`/blog/${blogs[2].id}`} style={{color:'white'}}>
+          {blogs[2].title || ""}
+        </Link>
+          </li>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+  )
+)}
+  {loading ? <p>Loading...</p> : (
+  blogs[3] && (
+    <div className="single-post-list single-post-wrap style-white">
+      <div className="thumb">
+      {/* <ul className="" style={{top:0 }}>
+        <li >  <a className="tag-base tag-blue" href="#">
+                    {blogs[3].category.name}
+                  </a></li>
+      </ul> */}
+        <img className="card-img rounded-0" width={250} height={150} src={blogs[3].image} alt="" />
+        <a className="tag-base tag-green" href="#">
+                    {blogs[3].category.name}
+                  </a>
+        <ul className="thumb-info" style={{ backgroundColor: 'rgba(0, 0, 0, 0.4)'}}>
+          <li className='text-truncate'>
+          <Link to={`/blog/${blogs[3].id}`} style={{color:'white'}}>
+          {blogs[3].title || ""}
+        </Link>
+          </li>
+        </ul>
+      </div>
+     
+    </div>
+  )
+)}
+  </div>
+</div>
+
             </div>
           </div>
+          </div>
+          
         </div>
-      </div>
+     
     </section>
   );
 }

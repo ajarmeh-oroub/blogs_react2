@@ -54,24 +54,14 @@ export default function EditBlog({ setIsBlogEdit, selectedBlog }) {
     }
   };
 
-  const appendToFormData = (formData, data) => {
-    Object.keys(data).forEach((key) => {
-      if (key === "image" && typeof data[key] === "string") {
-        // If 'image' is a string (URL), append it directly
-        formData.append(key, data[key]);
-      } else {
-        formData.append(key, data[key]);
-      }
-    });
-  };
+
 
   const handelEdit = async (e) => {
     e.preventDefault();
-    const formData = new FormData();
-    appendToFormData(formData, blogDetails); // Prepare the form data
+  
 
     try {
-      const response = await updateBlog(blogDetails.id, formData); // Make sure the API expects FormData
+      const response = await updateBlog(blogDetails.id, blogDetails); // Make sure the API expects FormData
       if (response) {
         setIsBlogEdit(false);
         setSuccess("Updated successfully");
