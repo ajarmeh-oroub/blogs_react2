@@ -1,4 +1,4 @@
-import { LockClosedIcon } from "@heroicons/react/20/solid";
+
 import { useState } from "react";
 import axiosClient from "../axios";
 import { useStateContext } from "../contexts/ContextProvider";
@@ -57,7 +57,7 @@ export default function Login() {
               to="/signup"
               className="fw-medium text-primary text-decoration-none"
             >
-              Signup for free
+              Signup 
             </Link>
           </p>
 

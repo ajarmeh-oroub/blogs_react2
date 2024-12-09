@@ -1,34 +1,26 @@
-
-import React, { useContext , useState  } from "react";
-import { Link, useLocation } from "react-router-dom";
-import { useStateContext } from "../contexts/ContextProvider";
-export default function Header() {
-  const { userToken, setUserToken } = useStateContext(); // Use context to access userToken and setUserToken
+import React, { useContext, useState } from "react";
+import { useLocation, Link } from "react-router-dom";
+import { useStateContext } from "../contexts/ContextProvider"; // Ensure this provides userToken and setUserToken
 import { Helmet } from "react-helmet";
-import axios from "axios";
-  const logout = () => {
-    setUserToken(null); // Log out by removing the token from the context and localStorage
-
-
-
+import axios from 'axios';
 
 
 export default function Header() {
+  const { userToken, setUserToken } = useStateContext(); // Destructure userToken and setUserToken from context
   const location = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [showResults, setShowResults] = useState(false);
-  const currentPath = location.pathname;
 
-  // Function to generate dynamic page title based on the current route
+  const logout = () => {
+    setUserToken(null); // Update the token in the context
+  };
+
+  const currentPath = location.pathname;
   const getPageTitle = () => {
-    if (currentPath.startsWith('/blog')) {
-      return "Blog Details";
-    }
-    switch (location.pathname) {
+    switch (currentPath) {
       case "/":
         return "Home";
-  
       case "/favorite":
         return "Favorites";
       case "/article":
@@ -39,8 +31,6 @@ export default function Header() {
         return "Contact";
       case "/about":
         return "About Us";
-      case '/contact':
-        return "Contact";
       default:
         return "Page Not Found";
     }
@@ -80,7 +70,9 @@ export default function Header() {
 
   return (
     <>
-
+ <Helmet>
+        <title>{getPageTitle()}</title>
+      </Helmet>
       {/* search popup start */}
       <div className="td-search-popup" id="td-search-popup">
         <form action="index.html" className="search-form">
@@ -107,6 +99,7 @@ export default function Header() {
 
       {/* header start */}
       <div className="navbar-area">
+        {/* navbar start */}
         <nav className="navbar navbar-expand-lg">
           <div className="container nav-container">
             <div className="responsive-mobile-menu">
@@ -117,13 +110,11 @@ export default function Header() {
                   </a>
                 </div>
               </div>
-
               <div className="logo d-lg-none d-block">
                 <a className="main-logo" href="index.html">
                   <img src="assets/img/logo.png" alt="img" />
                 </a>
               </div>
-
               <button
                 className="menu toggle-btn d-block d-lg-none"
                 data-target="#nextpage_main_menu"
@@ -145,39 +136,23 @@ export default function Header() {
                   <Link to="/">Home</Link>
                 </li>
                 <li className="current-menu-item">
-
-                  <Link to="/article"> Blogs</Link>
-
-                </li>
-                <li className="current-menu-item">
-                  <Link to="/favorite">Favorite</Link>
+                  <Link to="/article">Article</Link>
                 </li>
                 <li className="current-menu-item">
                   <Link to="/contact">Contact</Link>
                 </li>
                 <li className="current-menu-item">
-                  <a target="_blank" href="#">
+                  <Link to="/about">
                     About us
-                  </a>
+                  </Link>
                 </li>
 
                 {/* Conditionally render buttons based on userToken */}
-                {!userToken ? (
-                  <>
-                    <li className="current-menu-item">
-                      <Link to="/login">Login</Link>
-                    </li>
-                   
-                  </>
-                ) : (
-                  <li className="current-menu-item">
-                    <button onClick={logout}>Logout</button>
-                  </li>
-                )}
+   
               </ul>
             </div>
-            <div className="nav-right-part nav-right-part-desktop">
-              <div className="menu-search-inner">
+            <div className="nav-right-part nav-right-part-desktop mx-3" style={{ display: 'flex', alignItems: 'center' }}>
+              <div className="menu-search-inner ">
                 <input
                   type="text"
                   placeholder="Search For"
@@ -247,26 +222,75 @@ export default function Header() {
                   </div>
                 )}
               </div>
-
-              <div className="icon-container">
-                <Link to="/favorite" className="favorite-icon">
-                  <i
-                    className="fa fa-heart text-white"
-                    style={{ marginLeft: "20px" }}
-                  ></i>
-                </Link>
-                <Link to="/user" className="profile-icon">
-                  <i
-                    className="fa fa-user text-white"
-                    style={{ marginLeft: "20px" }}
-                  ></i>
-                </Link>
-              </div>
-
+           
             </div>
+            <ul className="navbar-nav menu-open">
+              {!userToken ? (
+                  <>
+                    <li className="current-menu-item mx-3">
+                      <Link to="/login"   style={{
+    all: "unset", // Resets all default styles
+    cursor: "pointer",
+    color:'white' ,
+    textDecoration: "none", // Ensures it still looks clickable
+  }}>Login</Link>
+                    </li>
+                   
+                  </>
+                ) : (
+                  <>
+                 
+                  <li className="current-menu-item">
+  <Link to="/favorite">
+    <i className="fa fa-heart" style={{ marginRight: "8px"  , color:"white"}}></i> 
+  
+  </Link>
+
+  <Link to="/user">
+    <i className="fa fa-user" style={{ marginRight: "8px"  , color:'white'}}></i> 
+
+  </Link>
+</li>
+<li className="current-menu-item mx-3">
+<button
+  onClick={logout}
+  style={{
+    all: "unset", // Resets all default styles
+    cursor: "pointer",
+    color:'white' ,
+    textDecoration: "none", // Ensures it still looks clickable
+  }}
+>
+  Logout
+</button>
+
+                  </li>
+
+                
+                  </>
+                )}
+                  </ul>
           </div>
         </nav>
       </div>
+       {location.pathname !== "/" && (
+        <div
+          className="breadcrumb-section"
+          style={{ backgroundColor: "#E6F2FD", height: "100px" }}
+        >
+          <div className="container">
+            <div className="breadcrumb-content">
+              <h2>{getPageTitle()}</h2> {/* Dynamic title here */}
+              <ul className="breadcrumb-list">
+                <li>
+                  <Link to="/">Home</Link>
+                </li>
+                <li>{getPageTitle()}</li> {/* Display dynamic page title */}
+              </ul>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }

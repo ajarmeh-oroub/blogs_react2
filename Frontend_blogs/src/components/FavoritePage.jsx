@@ -3,7 +3,7 @@ import ReactPaginate from 'react-paginate';
 import { getBlogs, getCatigories, fetchFavorites, toggleFavorite } from '../Services/Api';
 import { Link } from 'react-router-dom';
 
-export default function Blogs() {
+export default function FavoritePage() {
   const [blogs, setBlogs] = useState([]);
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('');

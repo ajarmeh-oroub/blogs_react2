@@ -1,5 +1,4 @@
 import { Link, useNavigate } from "react-router-dom";
-import { LockClosedIcon } from "@heroicons/react/20/solid";
 import { useState } from "react";
 import axiosClient from '../axios.js';
 import { useStateContext } from "../contexts/ContextProvider.jsx";
@@ -27,7 +26,7 @@ export default function Signup() {
       .then(({ data }) => {
         setCurrentUser(data.user); // Store user data
         setUserToken(data.token); // Store authentication token
-        navigate("/"); // Redirect to the homepage
+        navigate("/login"); // Redirect to the homepage
       })
       .catch((error) => {
         if (error.response) {

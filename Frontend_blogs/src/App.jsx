@@ -1,32 +1,24 @@
 
-
-
-
-
-
-
-
-
-import GuestLayout from './auth_components/guestlayout';
+import { Route, Routes, useLocation , Navigate } from 'react-router-dom';
+import Login from './auth_components/login';
+import Signup from './auth_components/signup';
+import Header from './components/Header';
+import FavoritePage from './components/FavoritePage'; 
 import BlogDetails from './components/BlogDetails'
-import Contact from './components/Contact'
-import FavoritePage from './components/FavoritePage'
-import Footer from './components/Footer'
-import Header from './components/Header'
-import { BrowserRouter, Route, Routes , Navigate, useLocation } from 'react-router-dom'
-import ProfileIndex from './components/Profile/ProfileIndex'
+import Landing from './components/landing/Landing';
+import Contact from './components/Contact';
 import Blogs from './components/Blogs'
+import ProfileIndex from './components/Profile/ProfileIndex'
 import AboutUs from './components/AboutUs'
-import Landing from './components/landing/Landing'
-import GetAnswerFromArticle from './components/GetAnswerFromArticle'
-
-
+import GuestLayout from './auth_components/guestlayout';
+import Footer from './components/Footer'
+// import Header  from './components/Header';
 
 
 function App() {
-  // Determine the current route
+
   const location = useLocation();
-  // const hideHeaderFooter = ["/login", "/signup"].includes(location.pathname);
+
   const hideHeaderFooter = ["/login", "/signup"].some((path) => location.pathname.startsWith(path));
 
 
@@ -47,7 +39,7 @@ function App() {
 
 
        {/* Authentication routes inside GuestLayout */}
-       <Route path="/" element={<GuestLayout />}>
+       <Route path="/" element={<GuestLayout/>}>
           <Route path="login" element={<Login />} />
           <Route path="signup" element={<Signup />} />
         </Route>
