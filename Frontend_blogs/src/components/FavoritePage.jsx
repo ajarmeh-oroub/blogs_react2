@@ -177,7 +177,7 @@ export default function Blogs() {
 
           {/* Sidebar */}
           <div className="col-lg-4 sidebar-widgets" style={{ position: 'relative' }}>
-            <div className="widget-wrap" style={{ padding: '20px', backgroundColor: '#ffffff', borderRadius: '10px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' ,position: 'sticky', left: '0', top: '0'  }}>
+            <div className="widget-wrap" style={{ padding: '20px', backgroundColor: '#ffffff', borderRadius: '10px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.4)' ,position: 'sticky', left: '0', top: '0'  }}>
             <div className="single-sidebar-widget popular-post-widget">
             <h4 className="single-sidebar-widget__title" style={{ fontSize: '18px', fontWeight: 'bold', color: '#1e2229', borderBottom: '2px solid #007BFF', paddingBottom: '10px' }}>
                   Popular Posts
@@ -215,7 +215,7 @@ export default function Blogs() {
         <a className="tag-base tag-green" href="#">
                     {blogs[1].category.name}
                   </a>
-        <ul className="thumb-info" style={{ backgroundColor: 'rgba(0, 0, 0, 0.2)'}}>
+        <ul className="thumb-info" style={{ backgroundColor: 'rgba(0, 0, 0, 0.4)'}}>
           <li>
           <li className='text-truncate'>
           <Link to={`/blog/${blogs[1].id}`} style={{color:'white'}}>
@@ -237,7 +237,7 @@ export default function Blogs() {
         <a className="tag-base tag-red" href="#">
                     {blogs[2].category.name}
                   </a>
-        <ul className="thumb-info" style={{ backgroundColor: 'rgba(0, 0, 0, 0.2)'}}>
+        <ul className="thumb-info" style={{ backgroundColor: 'rgba(0, 0, 0, 0.4)'}}>
           <li>
           <li className='text-truncate'>
           <Link to={`/blog/${blogs[2].id}`} style={{color:'white'}}>
@@ -264,7 +264,7 @@ export default function Blogs() {
         <a className="tag-base tag-green" href="#">
                     {blogs[3].category.name}
                   </a>
-        <ul className="thumb-info" style={{ backgroundColor: 'rgba(0, 0, 0, 0.2)'}}>
+        <ul className="thumb-info" style={{ backgroundColor: 'rgba(0, 0, 0, 0.4)'}}>
           <li className='text-truncate'>
           <Link to={`/blog/${blogs[3].id}`} style={{color:'white'}}>
           {blogs[3].title || ""}
