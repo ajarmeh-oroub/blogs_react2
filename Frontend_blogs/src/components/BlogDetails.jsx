@@ -182,7 +182,17 @@ export default function BlogDetails() {
         <div className="row">
           <div className="col-lg-8">
             <div className="main_blog_details">
-              <img  className="img-fluid" width={750} height={600} src={blog.image} alt={blog.title} />
+            <img
+  className="img-fluid"
+  style={{
+    width: "750px",
+    height: "500px",
+    objectFit: "cover",
+  }}
+  src={blog.image}
+  alt={blog.title}
+/>
+
               <h4>{blog.title}</h4>
               <div className="user_details">
                 <div className="float-left">{blog.category.name}</div>
@@ -219,8 +229,8 @@ export default function BlogDetails() {
               <GetAnswerFromArticle article={blog.article} />
             </div>
 
-            <div className="comment-form mb-4">
-              <h4>Leave a Comment</h4>
+            <div className="comment-form mb-4 mt-3">
+              <h4 className="mt-3">Leave a Comment</h4>
               <form onSubmit={handleCommentSubmit}>
                 {/* <input type="text" className="form-control" placeholder="Your Name" value={name} onChange={(e) => setName(e.target.value)} required />
                 <input type="email" className="form-control mt-2" placeholder="Your Email" value={email} onChange={(e) => setEmail(e.target.value)} /> */}
