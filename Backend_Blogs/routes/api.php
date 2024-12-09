@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AiController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\UserController;
@@ -52,3 +53,4 @@ Route::get('/favorites/{userId}/{blogId}', [BlogController::class, 'isFavorited'
 Route::get('/favorites/{userId}', [BlogController::class, 'getFavoriteBlogs']);
 
 Route::get('/search', [BlogController::class, 'search']);
+Route::post('/getAnswerFromArticle', [AiController::class, 'getAnswerFromArticle']);
