@@ -18,7 +18,7 @@ export default function Landing() {
   const [error, setError] = useState(null);
   const [favorites, setFavorites] = useState(new Set()); // Set to manage favorites
 
-  const userId = 1; // Replace with the actual user ID
+  const userId = localStorage.getItem("USER_ID"); // Replace with the actual user ID
 
   useEffect(() => {
     const fetchData = async () => {
