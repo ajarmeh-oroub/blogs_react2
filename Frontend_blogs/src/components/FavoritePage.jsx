@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { getBlogs, getCatigories } from '../Services/Api';
-import { fetchFavorites, toggleFavorite } from '../Services/Api';
+import ReactPaginate from 'react-paginate';
+import { getBlogs, getCatigories, fetchFavorites, toggleFavorite } from '../Services/Api';
 import { Link } from 'react-router-dom';
 
 export default function Blogs() {
@@ -10,7 +10,8 @@ export default function Blogs() {
   const [dateRange, setDateRange] = useState('');
   const [favorites, setFavorites] = useState(new Set());
   const [loading, setLoading] = useState(true);
-
+  const [currentPage, setCurrentPage] = useState(0);
+  const itemsPerPage = 6;
   const userId = 1; // Replace with the actual logged-in user ID
 
   // Fetch categories on mount
@@ -75,8 +76,13 @@ export default function Blogs() {
     }
   };
 
-  // Filter blogs to only show favorites
-  const favoriteBlogs = blogs.filter((blog) => favorites.has(blog.id));
+  const offset = currentPage * itemsPerPage;
+  const currentItems = blogs.slice(offset, offset + itemsPerPage);
+  const pageCount = Math.ceil(blogs.length / itemsPerPage);
+
+  const handlePageClick = ({ selected }) => {
+    setCurrentPage(selected);
+  };
 
   return (
     <section className="blog-post-area section-margin">
@@ -88,8 +94,8 @@ export default function Blogs() {
               <p>Loading...</p>
             ) : (
               <div className="row">
-                {favoriteBlogs.length > 0 ? (
-                  favoriteBlogs.map((blog) => (
+                {currentItems.length > 0 ? (
+                  currentItems.map((blog) => (
                     <div key={blog.id} className="col-lg-6 col-md-6 col-sm-12 mb-4">
                       <div className="single-post-wrap style-box border rounded-lg overflow-hidden shadow-lg">
                         <div className="thumb">
@@ -152,10 +158,21 @@ export default function Blogs() {
                     </div>
                   ))
                 ) : (
-                  <p>No favorite blogs found.</p>
+                  <p>No blogs found.</p>
                 )}
               </div>
             )}
+            <ReactPaginate
+              previousLabel={"previous"}
+              nextLabel={"next"}
+              breakLabel={"..."}
+              pageCount={pageCount}
+              marginPagesDisplayed={2}
+              pageRangeDisplayed={5}
+              onPageChange={handlePageClick}
+              containerClassName={"pagination pagination-margin"}
+              activeClassName={"active"}
+            />
           </div>
 
           {/* Sidebar */}
