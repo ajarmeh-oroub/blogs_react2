@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import axios from "axios";
-import { fetchFavorites, toggleFavorite, getCatigories } from "../Services/API";
-import BlogSummarizer from "./BlogSummary";
+import { fetchFavorites, toggleFavorite, getCatigories, getBlogs } from "../Services/API";
 import GetAnswerFromArticle from "./GetAnswerFromArticle";
 
 export default function BlogDetails() {
@@ -12,13 +11,32 @@ export default function BlogDetails() {
   const [newComment, setNewComment] = useState(""); // New comment input
   const [name, setName] = useState(""); // User's name for the comment
   const [email, setEmail] = useState(""); // Optional email
-
+  const [blogs, setBlogs] = useState([]);
   const [error, setError] = useState(null);
-  const [isSummary, setSummary] = useState(true); // Show summary or full article
+  const [loading, setLoading] = useState(true);
+ 
   const [isFavorite, setIsFavorite] = useState(false); // Track favorite status
   const [categories, setCategories] = useState([]);
   const [filteredBlogs, setFilteredBlogs] = useState([]); // Blogs filtered by category
   const [selectedCategory, setSelectedCategory] = useState(""); // Selected category for filtering
+
+  useEffect(() => {
+    const fetchBlogs = async () => {
+      setLoading(true);
+      try {
+        const filters = { categoryId: selectedCategory };
+        const fetchedBlogs = await getBlogs(filters);
+        setBlogs(fetchedBlogs || []);
+      } catch (err) {
+        console.error('Error fetching blogs:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchBlogs();
+  }, [selectedCategory]);
+
+
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -215,24 +233,117 @@ export default function BlogDetails() {
             </div>
           </div>
 
-          <div className="col-lg-4 sidebar-widgets" style={{ position: 'relative' }}>
-            <div
-              className="widget-wrap"
-              style={{
-                padding: '20px',
-                backgroundColor: '#ffffff',
-                borderRadius: '10px',
-                boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-                position: 'sticky',
-                left: '0',
-                top: '0',
-              }}
-            >
-              {/* Add any additional sidebar content here */}
+       
+     
+            <div className="col-lg-4 sidebar-widgets" style={{ position: 'relative' }}>
+            <div className="widget-wrap" style={{ padding: '20px', backgroundColor: '#ffffff', borderRadius: '10px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.4)' ,position: 'sticky', left: '0', top: '0'  }}>
+            <div className="single-sidebar-widget popular-post-widget">
+            <h4 className="single-sidebar-widget__title" style={{ fontSize: '18px', fontWeight: 'bold', color: '#1e2229', borderBottom: '2px solid #007BFF', paddingBottom: '10px' }}>
+                  Popular Posts
+                </h4>
+  <div className="popular-post-list">
+  {loading ? <p>Loading...</p> : (
+  blogs[0] && (
+    <div className="single-post-list single-post-wrap style-white">
+      <div className="thumb">
+        
+        <img className="card-img rounded-0" width={250} height={150} src={blogs[0].image} alt="" />
+        <a className="tag-base tag-yellow" href="#">
+                    {blogs[0].category.name}
+                  </a>
+        <ul className="thumb-info " style={{ backgroundColor: 'rgba(0, 0, 0, 0.2)'}}>
+          <li>
+          <li className='text-truncate' >
+          <Link to={`/blog/${blogs[0].id}`} style={{color:'white'}}>
+          {blogs[0].title || ""}
+        </Link>
+          </li>
+          </li>
+        </ul>
+      </div>
+   
+    </div>
+  )
+)}
+
+{loading ? <p>Loading...</p> : (
+  blogs[1] && (
+    <div className="single-post-list single-post-wrap style-white">
+      <div className="thumb">
+        <img className="card-img rounded-0" width={250} height={150} src={blogs[1].image} alt="" />
+        <a className="tag-base tag-green" href="#">
+                    {blogs[1].category.name}
+                  </a>
+        <ul className="thumb-info" style={{ backgroundColor: 'rgba(0, 0, 0, 0.4)'}}>
+          <li>
+          <li className='text-truncate'>
+          <Link to={`/blog/${blogs[1].id}`} style={{color:'white'}}>
+          {blogs[1].title || ""}
+        </Link>
+          </li>
+          </li>
+        </ul>
+      </div>
+    
+    </div>
+  )
+)}
+      {loading ? <p>Loading...</p> : (
+  blogs[2] && (
+    <div className="single-post-list single-post-wrap style-white">
+      <div className="thumb">
+        <img className="card-img rounded-0" width={250} height={150} src={blogs[2].image} alt="" />
+        <a className="tag-base tag-red" href="#">
+                    {blogs[2].category.name}
+                  </a>
+        <ul className="thumb-info" style={{ backgroundColor: 'rgba(0, 0, 0, 0.4)'}}>
+          <li>
+          <li className='text-truncate'>
+          <Link to={`/blog/${blogs[2].id}`} style={{color:'white'}}>
+          {blogs[2].title || ""}
+        </Link>
+          </li>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+  )
+)}
+  {loading ? <p>Loading...</p> : (
+  blogs[3] && (
+    <div className="single-post-list single-post-wrap style-white">
+      <div className="thumb">
+      {/* <ul className="" style={{top:0 }}>
+        <li >  <a className="tag-base tag-blue" href="#">
+                    {blogs[3].category.name}
+                  </a></li>
+      </ul> */}
+        <img className="card-img rounded-0" width={250} height={150} src={blogs[3].image} alt="" />
+        <a className="tag-base tag-green" href="#">
+                    {blogs[3].category.name}
+                  </a>
+        <ul className="thumb-info" style={{ backgroundColor: 'rgba(0, 0, 0, 0.4)'}}>
+          <li className='text-truncate'>
+          <Link to={`/blog/${blogs[3].id}`} style={{color:'white'}}>
+          {blogs[3].title || ""}
+        </Link>
+          </li>
+        </ul>
+      </div>
+     
+    </div>
+  )
+)}
+  </div>
+</div>
+
             </div>
           </div>
+          </div>
+          
         </div>
-      </div>
+     
     </section>
   );
 }
