@@ -1,7 +1,11 @@
 import { useState, useEffect } from "react";
 import { getCatigories, createBlog } from "../../Services/Api";
 import axios from "axios";
+
 import ArticleHandler from "../ArticleHandler";
+
+import { useStateContext } from "../../contexts/ContextProvider";
+
 
 export default function ProfileCreateBlog({ setIsCreatingBlog }) {
   const [blogDetails, setBlogDetails] = useState({
@@ -11,7 +15,7 @@ export default function ProfileCreateBlog({ setIsCreatingBlog }) {
     image: "",
     short_description: "",
   });
-
+  const { userToken, setUserToken , currentUser } = useStateContext(); 
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [categories, setCategories] = useState([]);
@@ -104,7 +108,9 @@ export default function ProfileCreateBlog({ setIsCreatingBlog }) {
         formData.append("image", blogDetails.image);
       }
 
-      const response = await createBlog(formData);
+
+      const response = await createBlog(currentUser.id ,formData); 
+
       if (response) {
         setSuccess("Blog created successfully.");
         setError(null);

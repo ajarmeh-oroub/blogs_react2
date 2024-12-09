@@ -52,7 +52,11 @@ class AuthController extends Controller
             $token = $user->createToken('main')->plainTextToken;
 
             return response([
-                'user' => $user,
+                'user' => [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                ],
                 'token' => $token,
             ], 201); // 201 Created status code
         } catch (\Illuminate\Validation\ValidationException $e) {
@@ -99,7 +103,11 @@ class AuthController extends Controller
             $token = $user->createToken('main')->plainTextToken;
 
             return response([
-                'user' => $user,
+                'user' => [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                ],
                 'token' => $token,
             ]);
         } catch (\Illuminate\Validation\ValidationException $e) {

@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
 import { getCatigories, updateBlog } from "../../Services/Api";
+import { useStateContext } from "../../contexts/ContextProvider";
 
 export default function EditBlog({ setIsBlogEdit, selectedBlog }) {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-  
+
+
   const [blogDetails, setBlogDetails] = useState({
     id: selectedBlog?.id || "",
     title: selectedBlog?.title || "",

@@ -1,19 +1,21 @@
 import React, { useContext, useState } from "react";
 import { useLocation, Link } from "react-router-dom";
-import { useStateContext } from "../contexts/ContextProvider"; // Ensure this provides userToken and setUserToken
+import { useStateContext } from "../contexts/ContextProvider";
 import { Helmet } from "react-helmet";
 import axios from 'axios';
 
 
 export default function Header() {
-  const { userToken, setUserToken } = useStateContext(); // Destructure userToken and setUserToken from context
+  const { userToken, setUserToken , currentUser  , setCurrentUser} = useStateContext(); 
+
   const location = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [showResults, setShowResults] = useState(false);
 
   const logout = () => {
-    setUserToken(null); // Update the token in the context
+    setCurrentUser({ id: null, name: '', email: '' });
+    setUserToken(null); 
   };
 
   const currentPath = location.pathname;

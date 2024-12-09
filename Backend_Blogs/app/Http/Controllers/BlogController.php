@@ -27,7 +27,7 @@ class BlogController extends Controller
         }
     
         // Execute the query to get the blogs
-        $blogs = $query->get();
+        $blogs = $query->orderBy('created_at', 'desc')->get();
     
         // Return the blogs (filtered or not) as JSON
         return response()->json($blogs);
@@ -49,7 +49,7 @@ class BlogController extends Controller
             [
                 'title.required' => 'The title field is required.',
                 'image.required' => 'An image URL is required.',
-                // 'image.url' => 'The image must be a valid URL.',
+                'image.url' => 'The image must be a valid URL.',
                 'article.required' => 'The article field is required.',
             ]
         );
@@ -167,7 +167,7 @@ class BlogController extends Controller
 
     }
 
-    public function getFavoriteBlogs($userId = 1)
+    public function getFavoriteBlogs($userId)
     {
         // Retrieve the user's favorite blogs using Query Builder
         $favoriteBlogs = DB::table('blog_user')
