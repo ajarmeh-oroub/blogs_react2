@@ -92,48 +92,64 @@ class AiController extends Controller
     }
     
 
-
-    public function generateBlog(Request $request)
+    public function handleArticleInput(Request $request)
     {
-        // Validate the input
+        $apiKey = env('GOOGLE_API_KEY');  // Store your API key in the .env file
+        $url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key={$apiKey}";
+    
+        // Validate the incoming request
         $request->validate([
-            'subject' => 'required|string',
+            'input' => 'required|string',
         ]);
     
-        // Extract subject from the request
-        $subject = $request->input('subject');
+        $userInput = $request->input('input');
     
-        // Prepare the OpenAI API request
+        // Prepare a smart prompt
+        $prompt = <<<EOT
+    You are a professional writer and editor. Determine the best action based on the user's input:
+    1. If the input is an article, refine it to improve clarity, grammar, and flow.
+    2. If the input is a topic, write a detailed and engaging article about the topic.
+    3. If the input includes key points, write an article using these points as a structure.
+    4. If the input is ambiguous, clarify it by assuming the most logical context.
+    
+    Here is the input provided by the user:
+    
+    "$userInput"
+    
+    Respond appropriately.
+    EOT;
+    
+        // Call the AI API
         $response = Http::withHeaders([
             'Content-Type' => 'application/json',
-            'Authorization' => 'Bearer ' . env('OPENAI_API_KEY'),
-        ])->post('https://api.openai.com/v1/chat/completions', [
-            'model' => 'o1-preview',
-            'messages' => [
+        ])->post($url, [
+            'contents' => [
                 [
-                    'role' => 'system',
-                    'content' => 'You are a professional content writer. Write a detailed and engaging blog about the given subject.'
-                ],
-                [
-                    'role' => 'user',
-                    'content' => "Please write a blog about: $subject"
-                ],
-            ],
+                    'parts' => [
+                        [
+                            'text' => $prompt
+                        ]
+                    ]
+                ]
+            ]
         ]);
     
-        // Extract the response content
+        // Check if the request was successful
         if ($response->successful()) {
-            $result = $response->json()['choices'][0]['message']['content'];
+            $result = $response->json(); // Extract the response from the API
     
-            // Return the generated blog
-            return response()->json(['blog' => $result]);
-        } else {
-            // Handle API errors
+            // Extract the text from the response
+            $text = $result['candidates'][0]['content']['parts'][0]['text'];
+    
             return response()->json([
-                'error' => 'Failed to generate blog. Please try again later.',
-                'details' => $response->json(),
-            ], $response->status());
+                'output' => $text
+            ]);
         }
+    
+        // Handle error
+        return response()->json(['error' => 'Failed to process input'], 500);
     }
+    
+    
     
 }
