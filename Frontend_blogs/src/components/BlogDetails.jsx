@@ -3,6 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import axios from "axios";
 import { fetchFavorites, toggleFavorite, getCatigories } from "../Services/API";
 import BlogSummarizer from "./BlogSummary";
+import GetAnswerFromArticle from "./GetAnswerFromArticle";
 
 export default function BlogDetails() {
   const { id } = useParams(); // Blog ID
@@ -178,7 +179,8 @@ export default function BlogDetails() {
               </div>
               <p>{blog.article}</p>
 
-              {isSummary && <div style={{ marginTop: "20px" }}><BlogSummarizer blogarticle={blog.article} /></div>}
+              {/* {isSummary && <div style={{ marginTop: "20px" }}><BlogSummarizer blogarticle={blog.article} /></div>} */}
+              <GetAnswerFromArticle article={blog.article} />
             </div>
 
             <div className="comment-form">
