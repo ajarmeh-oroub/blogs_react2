@@ -41,7 +41,7 @@ export default function BannerArea({ data, favorites, toggleFavorite }) {
               <li>
                 <a
                   className="tag-base tag-blue"
-                  style={{ width: 95, height: 40, fontSize: 15 }}
+                  style={{ fontSize:14 }}
                 >
                   {blog.category.name}
                 </a>

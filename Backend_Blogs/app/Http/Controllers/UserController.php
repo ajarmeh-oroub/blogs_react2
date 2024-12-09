@@ -42,18 +42,9 @@ class UserController extends Controller
     //     return response()->json($user);
     // }
 
-    public function show($id =1)
+    public function show($id)
 {
-    // Retrieve the authenticated user
-    // $user = auth()->user();
 
-    // // Ensure the logged-in user is authorized to view the requested resource
-    // if ($user->id != $id) {
-    //     return response()->json(['error' => 'Unauthorized access'], 403);
-    // }
-
-
-    // Fetch the user-specific data (adjust model or logic as needed)
     $userData = User::withCount('blog')->findOrFail($id);
 
     return response()->json($userData);

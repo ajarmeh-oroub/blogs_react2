@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import ReactPaginate from 'react-paginate';
 import { getBlogs, getCatigories, fetchFavorites, toggleFavorite } from '../Services/Api';
 import { Link } from 'react-router-dom';
+import { useStateContext } from '../contexts/ContextProvider';
 
 export default function FavoritePage() {
   const [blogs, setBlogs] = useState([]);
@@ -12,7 +13,7 @@ export default function FavoritePage() {
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 6;
-  const userId = 1; // Replace with the actual logged-in user ID
+  const { userToken, setUserToken , currentUser } = useStateContext();  // Replace with the actual logged-in user ID
 
   // Fetch categories on mount
   useEffect(() => {
@@ -48,20 +49,20 @@ export default function FavoritePage() {
   useEffect(() => {
     const fetchUserFavorites = async () => {
       try {
-        const userFavorites = await fetchFavorites(userId);
+        const userFavorites = await fetchFavorites(currentUser.id);
         setFavorites(new Set(userFavorites)); // Ensure it's a Set
       } catch (error) {
         console.error('Error fetching user favorites:', error);
       }
     };
     fetchUserFavorites();
-  }, [userId]);
+  }, [currentUser.id]);
 
   // Handle toggling of favorite blogs
   const handleToggleFavorite = async (blogId) => {
     const isFavorite = favorites.has(blogId);
     try {
-      await toggleFavorite(userId, blogId, isFavorite);
+      await toggleFavorite(currentUser.id, blogId, isFavorite);
       setFavorites((prevFavorites) => {
         const updatedFavorites = new Set(prevFavorites);
         if (isFavorite) {

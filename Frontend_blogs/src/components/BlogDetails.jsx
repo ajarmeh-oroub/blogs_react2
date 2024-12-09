@@ -3,6 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import axios from "axios";
 import { fetchFavorites, toggleFavorite, getCatigories, getBlogs } from "../Services/API";
 import GetAnswerFromArticle from "./GetAnswerFromArticle";
+import { useStateContext } from "../contexts/ContextProvider";
 
 export default function BlogDetails() {
   const { id } = useParams(); // Blog ID
@@ -19,6 +20,7 @@ export default function BlogDetails() {
   const [categories, setCategories] = useState([]);
   const [filteredBlogs, setFilteredBlogs] = useState([]); // Blogs filtered by category
   const [selectedCategory, setSelectedCategory] = useState(""); // Selected category for filtering
+  const { userToken, setUserToken , currentUser } = useStateContext(); 
 
   useEffect(() => {
     const fetchBlogs = async () => {
@@ -76,11 +78,11 @@ export default function BlogDetails() {
   }, [id]);
 
   useEffect(() => {
-    // Fetch favorite status
+  
     const fetchFavoriteStatus = async () => {
       try {
-        const userId = 1; // Replace with logged-in user's ID
-        const favorites = await fetchFavorites(userId);
+        
+        const favorites = await fetchFavorites(currentUser.id);
         setIsFavorite(favorites.has(parseInt(id)));
       } catch (error) {
         console.error("Error fetching favorite status:", error);
@@ -107,37 +109,53 @@ export default function BlogDetails() {
     fetchFilteredBlogs();
   }, [selectedCategory]);
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const handleCommentSubmit = (e) => {
     e.preventDefault();
-
-    if (!newComment || !name) {
-      alert("Please fill in both your name and comment.");
+    if (!newComment) {
+      Swal.fire({
+        title: 'Error',
+        text: 'Please fill in both your comment.',
+        icon: 'error',
+        confirmButtonText: 'OK',
+      });
       return;
     }
-
-    const payload = {
-      comment: newComment,
-      name: name,
-      email: email || null, // Optional email
-    };
-
+  
+    if (!currentUser.id) {
+      Swal.fire({
+        title: 'Error',
+        text: 'You must be logged in to comment.',
+        icon: 'error',
+        confirmButtonText: 'OK',
+      });
+      return;
+    }
+  
+  
+    const payload = { comment: newComment, userid: currentUser.id };
+  
+    setIsSubmitting(true); 
+  
     axios
       .post(`http://localhost:8000/api/blogs/${id}/comments`, payload)
       .then((response) => {
         setComments((prev) => [...prev, response.data]);
         setNewComment("");
-        setName("");
-        setEmail("");
       })
       .catch((error) => {
         alert("Error submitting comment. Please try again later.");
         console.error("Error submitting comment:", error);
+      })
+      .finally(() => {
+        setIsSubmitting(false); // Re-enable the submit button
       });
   };
-
+  
   const handleToggleFavorite = async () => {
     try {
-      const userId = 1; // Replace with logged-in user's ID
+      const userId = currentUser.id
       await toggleFavorite(userId, parseInt(id), isFavorite);
       setIsFavorite(!isFavorite);
     } catch (error) {
@@ -204,10 +222,10 @@ export default function BlogDetails() {
             <div className="comment-form">
               <h4>Leave a Comment</h4>
               <form onSubmit={handleCommentSubmit}>
-                <input type="text" className="form-control" placeholder="Your Name" value={name} onChange={(e) => setName(e.target.value)} required />
-                <input type="email" className="form-control mt-2" placeholder="Your Email" value={email} onChange={(e) => setEmail(e.target.value)} />
+                {/* <input type="text" className="form-control" placeholder="Your Name" value={name} onChange={(e) => setName(e.target.value)} required />
+                <input type="email" className="form-control mt-2" placeholder="Your Email" value={email} onChange={(e) => setEmail(e.target.value)} /> */}
                 <textarea className="form-control mt-2" rows="4" placeholder="Your Comment" value={newComment} onChange={(e) => setNewComment(e.target.value)} required></textarea>
-                <button type="submit" className="btn btn-primary mt-2">Submit</button>
+                <button type="submit" className="btn btn-primary mt-2" >Submit</button>
               </form>
             </div>
 

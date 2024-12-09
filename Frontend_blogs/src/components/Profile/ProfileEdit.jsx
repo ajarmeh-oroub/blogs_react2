@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import { updateUserData, getUserData } from "../../Services/Api";
+import { useStateContext } from "../../contexts/ContextProvider";
 
 
 export default function ProfileEdit({ setIsEditing }) {
-    
+  const { userToken, setUserToken , currentUser } = useStateContext();  
   const [userData, setUserData] = useState({
     name: '',
     about: '',
@@ -20,7 +21,7 @@ const [success ,setSuccess]=useState('');
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const userdata = await getUserData(); 
+        const userdata = await getUserData(currentUser.id); 
         setUserData(userdata); 
         setError(null); 
       } catch (err) {
@@ -47,7 +48,7 @@ const handleChange = (e) => {
     e.preventDefault(); 
   
     try {
-      const updatedUser = await updateUserData(userData); 
+      const updatedUser = await updateUserData(currentUser.id ,userData); 
       if (updatedUser) {
         // console.log('User data updated successfully:', updatedUser);
         setSuccess('User data updated successfully');

@@ -4,6 +4,7 @@ import ProfileEdit from './ProfileEdit';
 import ProfileCreateBlog from './ProfileCreateBlog';
 import EditBlog from './EditBlog';
 import { Link } from 'react-router-dom';
+import { useStateContext } from '../../contexts/ContextProvider';
 
 export default function ProfileIndex() {
   const [isEditing, setIsEditing] = useState(false);
@@ -14,12 +15,15 @@ export default function ProfileIndex() {
   const [blogs, setBlogs] = useState([]);
   const [isBlogEdit, setIsBlogEdit] = useState('');
   const [selectedBlog, setSelectedBlog] = useState('');
-  const [showAll, setShowAll] = useState(false); // State to track display mode
+  const [showAll, setShowAll] = useState(false);
+  const { currentUser } = useStateContext(); 
 
+  // console.log(currentUser);
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const userdata = await getUserData();
+        console.log(currentUser);
+        const userdata = await getUserData(currentUser.id);
         setUser(userdata);
         setError(null);
       } catch (error) {
@@ -46,7 +50,7 @@ export default function ProfileIndex() {
   useEffect(() => {
     const Blogs = async () => {
       try {
-        const getblogs = await getBlogsUser();
+        const getblogs = await getBlogsUser(currentUser.id);
         setBlogs(getblogs);
         setErrorBlog(null);
       } catch (err) {

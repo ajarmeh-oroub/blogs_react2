@@ -20,6 +20,7 @@ export default function Login() {
     axiosClient
       .post("/login", { email, password })
       .then(({ data }) => {
+    
         setCurrentUser(data.user); // Store the logged-in user
         setUserToken(data.token); // Store the authentication token
         navigate("/"); // Redirect to the homepage or dashboard

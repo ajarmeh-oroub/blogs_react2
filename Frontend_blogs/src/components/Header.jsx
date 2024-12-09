@@ -6,13 +6,15 @@ import axios from 'axios';
 
 
 export default function Header() {
-  const { userToken, setUserToken } = useStateContext(); 
+  const { userToken, setUserToken , currentUser  , setCurrentUser} = useStateContext(); 
+
   const location = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [showResults, setShowResults] = useState(false);
 
   const logout = () => {
+    setCurrentUser({ id: null, name: '', email: '' });
     setUserToken(null); 
   };
 

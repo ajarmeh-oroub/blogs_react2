@@ -1,11 +1,12 @@
 import axios from 'axios';
 
+
 const Api_base_url = 'http://127.0.0.1:8000/api/';
 
 // Get the specified user data
-export const getUserData = async () => {
+export const getUserData = async (id) => {
   try {
-    const response = await axios.get(`${Api_base_url}user/1/show`);
+    const response = await axios.get(`${Api_base_url}user/${id}/show`);
     return response.data;
   } catch (error) {
     console.error("Error:", error); 
@@ -15,9 +16,9 @@ export const getUserData = async () => {
 
 //user data update
 
-export const updateUserData = async (userData) => {
+export const updateUserData = async (id , userData) => {
   try {
-    const response = await axios.put(`${Api_base_url}user/1`, userData);
+    const response = await axios.put(`${Api_base_url}user/${id}`, userData);
     return response.data;
   } catch (error) {
     console.error("Error:", error);
@@ -25,9 +26,9 @@ export const updateUserData = async (userData) => {
   }
 };
 //user create blog
-export const createBlog = async (BlogDetails) => {
+export const createBlog = async (userId, BlogDetails) => {
   try {
-    const userId = 1;
+   
     if (userId) {
       BlogDetails.append("user_Id", userId);
     } else {
@@ -93,9 +94,10 @@ return null;
 
 
 //get the blogs that a specific user has created 
-export const getBlogsUser =async(formData)=>{
+export const getBlogsUser =async(id )=>{
   try{
-const response= await axios.get(`${Api_base_url}blogUser/1` ,formData )
+    
+const response= await axios.get(`${Api_base_url}blogUser/${id}`  )
 return response.data
   }catch(error){
     console.log("Error:" , error)
