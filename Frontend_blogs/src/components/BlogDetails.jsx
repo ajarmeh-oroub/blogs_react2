@@ -248,7 +248,7 @@ export default function BlogDetails() {
       <div className="thumb">
         
         <img className="card-img rounded-0" width={250} height={150} src={blogs[0].image} alt="" />
-        <a className="tag-base tag-yellow" href="#">
+        <a className="tag-base tag-light-green" href="#">
                     {blogs[0].category.name}
                   </a>
         <ul className="thumb-info " style={{ backgroundColor: 'rgba(0, 0, 0, 0.2)'}}>
@@ -271,7 +271,7 @@ export default function BlogDetails() {
     <div className="single-post-list single-post-wrap style-white">
       <div className="thumb">
         <img className="card-img rounded-0" width={250} height={150} src={blogs[1].image} alt="" />
-        <a className="tag-base tag-green" href="#">
+        <a className="tag-base tag-red" href="#">
                     {blogs[1].category.name}
                   </a>
         <ul className="thumb-info" style={{ backgroundColor: 'rgba(0, 0, 0, 0.4)'}}>
@@ -293,7 +293,7 @@ export default function BlogDetails() {
     <div className="single-post-list single-post-wrap style-white">
       <div className="thumb">
         <img className="card-img rounded-0" width={250} height={150} src={blogs[2].image} alt="" />
-        <a className="tag-base tag-red" href="#">
+        <a className="tag-base tag-purple" href="#">
                     {blogs[2].category.name}
                   </a>
         <ul className="thumb-info" style={{ backgroundColor: 'rgba(0, 0, 0, 0.4)'}}>
