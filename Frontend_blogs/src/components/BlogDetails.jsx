@@ -182,7 +182,17 @@ export default function BlogDetails() {
         <div className="row">
           <div className="col-lg-8">
             <div className="main_blog_details">
-              <img  className="img-fluid" width={750} height={600} src={blog.image} alt={blog.title} />
+            <img
+  className="img-fluid"
+  style={{
+    width: "750px",
+    height: "500px",
+    objectFit: "cover",
+  }}
+  src={blog.image}
+  alt={blog.title}
+/>
+
               <h4>{blog.title}</h4>
               <div className="user_details">
                 <div className="float-left">{blog.category.name}</div>
@@ -219,36 +229,32 @@ export default function BlogDetails() {
               <GetAnswerFromArticle article={blog.article} />
             </div>
 
-            <div className="comment-form">
-              <h4>Leave a Comment</h4>
+            <div className="comment-form mb-4 mt-3">
+              <h4 className="mt-3">Leave a Comment</h4>
               <form onSubmit={handleCommentSubmit}>
                 {/* <input type="text" className="form-control" placeholder="Your Name" value={name} onChange={(e) => setName(e.target.value)} required />
                 <input type="email" className="form-control mt-2" placeholder="Your Email" value={email} onChange={(e) => setEmail(e.target.value)} /> */}
                 <textarea className="form-control mt-2" rows="4" placeholder="Your Comment" value={newComment} onChange={(e) => setNewComment(e.target.value)} required></textarea>
-                <button type="submit" className="btn btn-primary mt-2" >Submit</button>
+                <button type="submit" className="btn btn-primary mt-4 mb-4" >Submit</button>
               </form>
             </div>
 
-            <div className="comments-area">
-              <h4>{comments.length} Comments</h4>
-              {comments.length === 0 ? (
-                <p>No comments yet. Be the first to comment!</p>
-              ) : (
-                comments.map((comment) => (
-                  <div className="comment-list" key={comment.id}>
-                    <div className="single-comment justify-content-between d-flex">
-                      <div className="user">
-                        <h5>{comment.name}</h5>
-                        <p>{new Date(comment.created_at).toLocaleString()}</p>
-                      </div>
-                      <div className="desc">
-                        <p>{comment.comment}</p>
-                      </div>
-                    </div>
-                  </div>
-                ))
-              )}
-            </div>
+            <div className="comments-area mt-4">
+               <h4>{comments.length} Comments</h4>
+                {comments.length === 0 ? ( <p>No comments yet. Be the first to comment!</p> ) :
+                 ( comments.map((comment) => 
+                 ( <div className="comment-list" key={comment.id}> 
+                 <div className="single-comment justify-content-between " style={{ borderBottom: '1px solid #ced4da', padding: '10px 0', }} > 
+                  <div className="user" style={{ flex: '0 0 auto', marginRight: '15px' }}> 
+                    <h6 style={{ fontWeight: 'bold', color: '#007BFF' }}>{comment.user.name}</h6> 
+                    <p style={{ fontSize: '12px', color: '#6c757d' }}>{new Date(comment.created_at).toLocaleString()}</p>
+                     </div> 
+                     <div className="desc" style={{ flex: '1 1 auto' }}>
+                       <p style={{ fontSize: '16px', color: '#495057' }}>{comment.comment}</p> 
+                       </div> 
+                       </div> 
+                       </div>
+                       )) )} </div>
           </div>
 
        

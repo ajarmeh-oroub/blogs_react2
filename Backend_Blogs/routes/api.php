@@ -27,6 +27,7 @@ use Illuminate\Support\Facades\DB;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     Route::post('/logout', [AuthController::class, 'logout']);
+
 });
 
 Route::post('/signup', [AuthController::class, 'signup']);

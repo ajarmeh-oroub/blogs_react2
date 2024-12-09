@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -43,12 +43,14 @@ class UserController extends Controller
     // }
 
     public function show($id)
-{
-
-    $userData = User::withCount('blog')->findOrFail($id);
-
-    return response()->json($userData);
-}
+    {
+        
+    
+        // Fetch user data with blog count
+        $userData = User::withCount('blog')->findOrFail($id);
+    
+        return response()->json($userData);
+    }
 
     
     
