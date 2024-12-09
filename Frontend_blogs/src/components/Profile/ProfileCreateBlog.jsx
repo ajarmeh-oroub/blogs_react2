@@ -6,7 +6,6 @@ import ArticleHandler from "../ArticleHandler";
 
 import { useStateContext } from "../../contexts/ContextProvider";
 
-
 export default function ProfileCreateBlog({ setIsCreatingBlog }) {
   const [blogDetails, setBlogDetails] = useState({
     title: "",
@@ -15,7 +14,7 @@ export default function ProfileCreateBlog({ setIsCreatingBlog }) {
     image: "",
     short_description: "",
   });
-  const { userToken, setUserToken , currentUser } = useStateContext(); 
+  const { userToken, setUserToken, currentUser } = useStateContext();
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [categories, setCategories] = useState([]);
@@ -108,7 +107,6 @@ export default function ProfileCreateBlog({ setIsCreatingBlog }) {
         formData.append("image", blogDetails.image);
       }
 
-
       const response = await createBlog(currentUser.id ,formData); 
 
       if (response) {
@@ -121,6 +119,11 @@ export default function ProfileCreateBlog({ setIsCreatingBlog }) {
       setError("Error saving the blog. Please check your input.");
       setSuccess(null);
     }
+  };
+
+  // Cancel button handler
+  const handleCancel = () => {
+    setIsCreatingBlog(false); // This will close the blog creation form
   };
 
   return (
@@ -217,7 +220,7 @@ export default function ProfileCreateBlog({ setIsCreatingBlog }) {
 
               <button
                 type="button"
-                className="btn btn-secondary mx-2"
+                className="btn btn-warning mx-2"
                 onClick={generateImage}
                 disabled={loadingImage}
               >
@@ -226,6 +229,14 @@ export default function ProfileCreateBlog({ setIsCreatingBlog }) {
 
               <button type="submit" className="btn btn-primary">
                 Create Blog
+              </button>
+
+              <button
+                type="button"
+                className="btn btn-secondary mx-2"
+                onClick={handleCancel}
+              >
+                Cancel
               </button>
             </form>
           </div>

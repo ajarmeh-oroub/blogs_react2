@@ -2,20 +2,18 @@ import { useState, useEffect } from "react";
 import { updateUserData, getUserData } from "../../Services/Api";
 import { useStateContext } from "../../contexts/ContextProvider";
 
-
 export default function ProfileEdit({ setIsEditing }) {
-  const { userToken, setUserToken , currentUser } = useStateContext();  
+  const { userToken, setUserToken, currentUser } = useStateContext();
   const [userData, setUserData] = useState({
     name: '',
     about: '',
     address: '',
     email: '',
     password: '',
-  
   });
 
   const [error, setError] = useState('');
-const [success ,setSuccess]=useState('');
+  const [success, setSuccess] = useState('');
 
   // Fetch user data
   useEffect(() => {
@@ -34,8 +32,7 @@ const [success ,setSuccess]=useState('');
     fetchUserData();
   }, []); 
 
-
-const handleChange = (e) => {
+  const handleChange = (e) => {
     const { name, value } = e.target;
     setUserData({
       ...userData,
@@ -43,14 +40,12 @@ const handleChange = (e) => {
     });
   };
 
-
   const handleSubmit = async (e) => {
     e.preventDefault(); 
-  
+
     try {
-      const updatedUser = await updateUserData(currentUser.id ,userData); 
+      const updatedUser = await updateUserData(currentUser.id, userData); 
       if (updatedUser) {
-        // console.log('User data updated successfully:', updatedUser);
         setSuccess('User data updated successfully');
       }
       setIsEditing(false); 
@@ -61,7 +56,11 @@ const handleChange = (e) => {
       setSuccess(null);
     }
   };
-  
+
+  // Cancel editing mode
+  const handleCancel = () => {
+    setIsEditing(false); // Stop editing mode and exit
+  };
 
   return (
     <div className="container py-5 mt-5">
@@ -75,7 +74,7 @@ const handleChange = (e) => {
 
           <div className="px-4 py-3">
             <form onSubmit={handleSubmit}>
-              {/* First Name */}
+              {/* Name */}
               <div className="form-group">
                 <label htmlFor="name"> Name</label>
                 <input
@@ -83,23 +82,10 @@ const handleChange = (e) => {
                   id="name"
                   name="name"
                   className="form-control"
-                  value={userData.first_name}
+                  value={userData.name}
                   onChange={handleChange}
                 />
               </div>
-
-              {/* Last Name */}
-              {/* <div className="form-group">
-                <label htmlFor="last_name">Last Name</label>
-                <input
-                  type="text"
-                  id="last_name"
-                  name="last_name"
-                  className="form-control"
-                  value={userData.last_name}
-                  onChange={handleChange}
-                />
-              </div> */}
 
               {/* About */}
               <div className="form-group">
@@ -152,10 +138,19 @@ const handleChange = (e) => {
                 />
               </div>
 
-              {/* Submit Button */}
-              <button type="submit" className="btn btn-primary">
-                Save Changes
-              </button>
+              {/* Submit and Cancel Buttons */}
+              <div className="d-flex ">
+                <button type="submit" className="btn btn-primary mx-2">
+                  Save Changes
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={handleCancel}
+                >
+                  Cancel
+                </button>
+              </div>
             </form>
           </div>
         </div>
