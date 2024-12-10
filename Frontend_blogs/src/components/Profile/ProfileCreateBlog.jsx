@@ -69,7 +69,7 @@ export default function ProfileCreateBlog({ setIsCreatingBlog }) {
 
     try {
       const apiUrl = "https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-xl-base-1.0";
-      const apiKey = "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"; 
+      const apiKey = ""; 
 
       const response = await axios.post(
         apiUrl,
@@ -154,6 +154,9 @@ export default function ProfileCreateBlog({ setIsCreatingBlog }) {
                   value={blogDetails.article}
                   onChange={handleInputChange}
                   required
+                  style={{
+                    minHeight: "250px"
+                  }}
                 />
                 <ArticleHandler
                   inputText={blogDetails.article}

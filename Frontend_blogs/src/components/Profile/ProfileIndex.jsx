@@ -93,7 +93,7 @@ export default function ProfileIndex() {
                   {user ? `${user.name} ` : 'Loading...'}
                 </h4>
                 <p className="small mb-0 text-white">
-                  <i className="fas fa-map-marker-alt mr-2" />
+                  <i className="fas fa-envelope mr-2" />
                   {user ? user.email : 'Loading email...'}
                 </p>
                 <p className="small mb-4 text-white">
