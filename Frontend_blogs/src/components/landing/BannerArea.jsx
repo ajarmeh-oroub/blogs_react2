@@ -6,7 +6,7 @@ export default function BannerArea({ data, favorites, toggleFavorite }) {
     <div className="row" key={blog.id}>
       <div className="col-lg-6">
         <div className="thumb after-left-top">
-          <img
+          <img  className="main-img"
             src={blog.image}
             alt="img"
             style={{

@@ -123,7 +123,16 @@ export default function ProfileIndex() {
 
           <div className="py-4 px-4">
             <div className="d-flex align-items-center justify-content-between mb-3">
-              <h5 className="mb-0">Recent Articles By You</h5>
+            <h5
+  className="mb-0"
+  style={{
+    fontSize: window.innerWidth < 768 ? '16px' : window.innerWidth < 992 ? '18px' : '20px',
+  }}
+>
+  Recent Articles By You
+</h5>
+
+
               <div>
                 <button onClick={handleCreateClick} className="btn btn-outline-primary btn-sm mr-2">Create New Article</button>
                 <a href="#" onClick={toggleShowAll} className="btn btn-link text-muted">{showAll ? 'Show Less' : 'Show All'}</a>
