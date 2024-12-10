@@ -26,7 +26,7 @@ export default function Header() {
         return "Home";
       case currentPath === "/favorite":
         return "Favorites";
-      case currentPath === "/article":
+      case currentPath === "/articles":
         return "Articles";
       case currentPath === "/user":
         return "User Dashboard";
@@ -35,7 +35,7 @@ export default function Header() {
       case currentPath === "/about":
         return "About Us";
       case currentPath.startsWith("/blog"):
-        return "Article";
+        return "Articles";
       default:
         return "Page Not Found";
     }
@@ -142,7 +142,7 @@ export default function Header() {
                   <Link to="/">Home</Link>
                 </li>
                 <li className="current-menu-item">
-                  <Link to="/article">Article</Link>
+                  <Link to="/articles">Articles</Link>
                 </li>
                 <li className="current-menu-item">
                   <Link to="/contact">Contact Us</Link>
