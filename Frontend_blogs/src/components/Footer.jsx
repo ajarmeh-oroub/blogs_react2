@@ -62,7 +62,7 @@ export default function Footer() {
           <div className="col-lg-4 col-sm-6">
             <div className="widget">
               <h5 className="widget-title">Features</h5>
-              <ul className="resources_list" style={{color: "#fff"}}>
+              <ul className="resources_list" style={{color: "rgba(255, 255, 255, 0.8)"}}>
               <li>Effortlessly Discover Your Favorite Content</li>
               <li>Experience a Smart Blog Enriched with AI Insights</li>
               <li>Explore Categories Tailored to Your Interests</li>
