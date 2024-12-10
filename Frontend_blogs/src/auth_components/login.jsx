@@ -1,9 +1,7 @@
-
 import { useState } from "react";
 import axiosClient from "../axios";
 import { useStateContext } from "../contexts/ContextProvider";
 import { Link, useNavigate } from "react-router-dom";
-
 
 export default function Login() {
   const { setCurrentUser, setUserToken } = useStateContext();
@@ -12,15 +10,13 @@ export default function Login() {
   const [error, setError] = useState({ __html: "" });
   const navigate = useNavigate(); // Initialize navigate
 
-
   const onSubmit = (ev) => {
     ev.preventDefault();
     setError({ __html: "" }); // Clear any previous errors
-  
+
     axiosClient
       .post("/login", { email, password })
       .then(({ data }) => {
-    
         setCurrentUser(data.user); // Store the logged-in user
         setUserToken(data.token); // Store the authentication token
         navigate("/"); // Redirect to the homepage or dashboard
@@ -43,13 +39,12 @@ export default function Login() {
         console.error(error);
       });
   };
-  
 
   return (
-    <div className="d-flex align-items-center justify-content-center vh-100">
-      <div className="card shadow-lg border-0" style={{ width: "400px" }}>
+    <div className="d-flex align-items-center justify-content-center vh-100 mt-5" style={{ background: '#f8f9fa' }}>
+      <div className="card shadow-lg border-0" style={{ width: "400px", borderRadius: '10px' }}>
         <div className="card-body p-4">
-          <h2 className="text-center fs-4 fw-bold text-dark">
+          <h2 className="text-center fs-4 fw-bold text-dark" style={{ marginBottom: '20px' }}>
             Sign in to Your Account
           </h2>
           <p className="text-center fs-6 text-muted">
@@ -57,8 +52,9 @@ export default function Login() {
             <Link
               to="/signup"
               className="fw-medium text-primary text-decoration-none"
+              style={{ color: '#007bff' }}
             >
-              Signup 
+              Signup
             </Link>
           </p>
 
@@ -66,12 +62,13 @@ export default function Login() {
             <div
               className="alert alert-danger text-center"
               dangerouslySetInnerHTML={error}
+              style={{ marginTop: '20px' }}
             ></div>
           )}
 
           <form onSubmit={onSubmit} className="mt-4">
             <div className="mb-3">
-              <label htmlFor="email-address" className="form-label">
+              <label htmlFor="email-address" className="form-label" style={{ fontWeight: 'bold' }}>
                 Email Address
               </label>
               <input
@@ -83,12 +80,12 @@ export default function Login() {
                 value={email}
                 onChange={(ev) => setEmail(ev.target.value)}
                 className="form-control"
-              
+                style={{ borderRadius: '5px' }}
               />
             </div>
 
             <div className="mb-3">
-              <label htmlFor="password" className="form-label">
+              <label htmlFor="password" className="form-label" style={{ fontWeight: 'bold' }}>
                 Password
               </label>
               <input
@@ -100,7 +97,7 @@ export default function Login() {
                 value={password}
                 onChange={(ev) => setPassword(ev.target.value)}
                 className="form-control"
-
+                style={{ borderRadius: '5px' }}
               />
             </div>
 
@@ -116,13 +113,13 @@ export default function Login() {
                   Remember me
                 </label>
               </div>
-             
             </div>
 
             <div>
               <button
                 type="submit"
                 className="btn btn-primary w-100 d-flex align-items-center justify-content-center"
+                style={{ backgroundColor: '#007bff', borderColor: '#007bff', padding: '10px 0', borderRadius: '5px', fontWeight: 'bold' }}
               >
                 Sign In
               </button>
