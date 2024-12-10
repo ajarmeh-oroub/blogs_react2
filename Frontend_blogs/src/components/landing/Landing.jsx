@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import BannerArea from './BannerArea';
 import PostGrid from './PostGrid';
 import PostTrending from './PostTrending';
+import { Link } from 'react-router-dom';
 import { fetchHomeData, fetchFavorites, toggleFavorite as toggleFavoriteApi } from '../../Services/Api.jsx';
 
 
@@ -128,7 +129,7 @@ function CreateWithAISection() {
             <p style={{ marginBottom: '15px', color: 'white' }}>
               Our AI tools make it easy to create professional-quality content and eye-catching images effortlessly. Join our community and start creating today!
             </p>
-            <a href="/create" className="btn btn-base" style={{ padding: '', fontSize: '16px' }}>Start Creating</a>
+            <Link to="/user" className="btn btn-base" style={{ padding: '', fontSize: '16px' }}>Start Creating</Link>
           </div>
         </div>
       </div>
@@ -137,21 +138,21 @@ function CreateWithAISection() {
 }
 function DiscountSection() {
   return (
-<section className="chatbot-section" style={{ padding: '30px 20px', background: 'linear-gradient(70deg, #6aafe6 0%, #097BED 100%)', color: '#ffffff', height: '230px', width: '90%', position: 'relative', top: '-100px', left: '75px' }}>
+<section className="chatbot-section" style={{ padding: '26px 20px', background: 'linear-gradient(70deg, #6aafe6 0%, #097BED 100%)', color: '#ffffff', height: '210px', width: '90%', position: 'relative', top: '-100px', left: '75px' }}>
   <div className="container">
     <div className="row">
-      <div className="col-lg-8">
+      <div className="col-lg-9">
         <h2 style={{ color: '#FFBE00' }}>Interactive Q&A</h2>
         <p style={{ color: '#ffffff' }}>
           Engage with our articles through our interactive Q&A chatbot. Ask questions, get insights, and discuss the content directly with our AI-powered assistant. Join us now and enhance your reading experience!
         </p>
       </div>
-      <div className="col-lg-4">
+      <div className="col-lg-3">
         <img
-          src="https://images.unsplash.com/photo-1518770660439-4636190af475?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
+          src="https://media.istockphoto.com/id/1494104649/photo/ai-chatbot-artificial-intelligence-digital-concept.jpg?s=612x612&w=0&k=20&c=1Zq2sj3W0tWcpc-n1fVt4dQQOBGhtwcAk1H2eQ5MAbI="
           alt="Interactive Q&A"
           className="img-fluid rounded"
-          style={{ width: '250px', borderRadius: '8px'}}
+          style={{ width: '280px', borderRadius: '8px'}}
         />
       </div>
     </div>

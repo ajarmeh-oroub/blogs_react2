@@ -145,7 +145,7 @@ export default function Header() {
                   <Link to="/article">Article</Link>
                 </li>
                 <li className="current-menu-item">
-                  <Link to="/contact">Contact</Link>
+                  <Link to="/contact">Contact Us</Link>
                 </li>
                 <li className="current-menu-item">
                   <Link to="/about">

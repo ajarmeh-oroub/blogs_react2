@@ -37,10 +37,28 @@ export default function PostTrending({ trends, latest,  data, favorites, toggleF
             </div>
             <h6>
               <Link to={`/blog/${trend.id}`}>
-                <a href="#">{trend.title}</a>
+              <a
+    href="#"
+    className="text-truncate"
+    style={{
+      whiteSpace: "nowrap",
+      overflow: "hidden",
+      textOverflow: "ellipsis",
+      display: "block",
+    }}
+  >
+    {trend.title}
+  </a>
+
+
               </Link>
             </h6>
-            <p>{trend.short_description}</p>
+            <p    style={{
+      whiteSpace: "nowrap",
+      overflow: "hidden",
+      textOverflow: "ellipsis",
+      display: "block",
+    }}>{trend.short_description}</p>
           </div>
         </div>
       </div>
@@ -54,7 +72,7 @@ export default function PostTrending({ trends, latest,  data, favorites, toggleF
       <div className="single-post-list-wrap" key={blog.id}>
       <div className="media">
         <div className="media-left">
-          <img src="assets/img/post/list/1.png" alt="img" />
+          <img src="/assets/img/post/list/1.png" alt="img" />
         </div>
         <div className="media-body">
           <div className="details">
@@ -70,7 +88,10 @@ export default function PostTrending({ trends, latest,  data, favorites, toggleF
               
               <a href="#">
                 <Link to={`/blog/${blog.id}`}>
-                  <a href="#">{blog.title}</a>
+                <a href="#" className="text-truncate" style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+  {blog.title}
+</a>
+
                 </Link>
               </a>
             </h6>
@@ -89,7 +110,7 @@ export default function PostTrending({ trends, latest,  data, favorites, toggleF
         <div className="section-title">
           <div className="row">
             <div className="col-md-3 mb-2 mb-md-0">
-              <h6 className="title">Trending Blogs</h6>
+              <h6 className="title">Trending Articles</h6>
             </div>
           </div>
         </div>

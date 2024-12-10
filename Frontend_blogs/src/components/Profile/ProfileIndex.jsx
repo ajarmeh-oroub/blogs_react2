@@ -69,77 +69,64 @@ export default function ProfileIndex() {
     return <div className="alert alert-danger">{error}</div>;
   }
 
-  const displayedBlogs = showAll ? blogs : blogs.slice(0, 8); // Determine which blogs to display
+  const displayedBlogs = showAll ? blogs : blogs.slice(0, 8);
 
   return (
     <div className="row py-5 px-col-4">
-      <div className="col-md-11 mx-auto">
-        <div className="bg-white shadow rounded overflow-hidden">
-          <div className="px-4 pt-0 pb-4 cover">
-            <div className="media align-items-end profile-head">
-              <div className="profile mr-3">
-                <img
-                  src="/assets/img/user.jpg"
-                  alt="User Avatar"
-                  width={130}
-                  className="rounded mb-2 img-thumbnail"
-                />
-                <button onClick={handleEditClick} className="btn btn-base btn-block">
-                  Edit Profile
-                </button>
-              </div>
-              <div className="media-body mb-5 text-white">
-                <h4 className="mt-0 mb-0 text-white">
-                  {user ? `${user.name} ` : 'Loading...'}
-                </h4>
-                <p className="small mb-0 text-white">
-                  <i className="fas fa-envelope mr-2" />
-                  {user ? user.email : 'Loading email...'}
-                </p>
-                <p className="small mb-4 text-white">
-                  <i className="fas fa-map-marker-alt mr-2" />
-                  {user ? user.address : 'Loading address...'}
-                </p>
-              </div>
-            </div>
+      <div className="col-md-3">
+        <div className="shadow rounded o" style={{ padding: '20px', background: '#102950', borderRadius: '8px', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)', color: '#fff', minHeight: '400px' }}>
+          <div className="profile-head text-center" style={{ maxWidth: '100%', padding: '20px' }}>
+            <img src="/assets/img/user.jpg" alt="User Avatar" style={{ width: '100px', height: '100px', objectFit: 'cover', borderRadius: '50%', border: '3px solid #fff' }} />
+            <h4 className="mt-0 mb-0" style={{ fontWeight: 'bold', color: '#fff', fontSize: '1.5rem', margin: '10px 0' }}>
+              {user ? user.name : 'Loading...'}
+            </h4>
+            <p className="small mb-2" style={{ color: '#ffbe00', marginTop: '10px', padding: '0 10px', fontSize: '1rem' ,textAlign:'left' }}>
+              <i className="fas fa-envelope mr-2" style={{ color: '#ffbe00' }} />
+              {user ? user.email : 'Loading email...'}
+            </p>
+            <p className="mb-4" style={{ color: 'white', marginBottom: '10px ', padding: '0 10px', fontSize: '1rem' ,textAlign:'left' }}>
+              <i className="fas fa-map-marker-alt mr-2" style={{ color: 'white' ,textAlign:'left'}} />
+              {user ? user.address : 'Loading address...'}
+            </p>
+            <br />
           </div>
+          <div className="" style={{ marginTop: '20px' }}>
+            <p className="" style={{ color: '#ffbe00' , marginTop: '6px' , textAlign:'left' , marginLeft:26 }}>About</p>
+            <p className="" style={{ color: '#eee', marginTop: '2px', padding: '0 10px', fontSize: '1rem' ,textAlign:'left'  , marginLeft:26}}>
+              {user ? user.about : 'Loading about section...'}
+            </p>
+          </div>
+          <div className="blog-count ml-2" style={{ marginTop: '20px' }}>
+            <span className="" style={{ color: '#ffbe00'  , marginLeft:20}}>Blog Count:</span>
+            <span className="" style={{ color: '#eee', marginTop: '10px', padding: '0 10px', fontSize: '1.1rem', color: '#ffbe00'  , marginLeft:26}}>
+              {user && user.blog_count > 0 ? user.blog_count : 'Loading...'}
+            </span>
+          </div>
+          {/* Edit Profile Button */}
+          <div className="text-center mt-3">
+            <button onClick={handleEditClick} className="btn btn-warning btn-sm">Edit Your Profile</button>
+          </div>
+        </div>
+      </div>
 
-          {isEditing ? (
-            <ProfileEdit user={user} setIsEditing={setIsEditing} />
-          ) : (
-            <div className="bg-light p-4 d-flex justify-content-end text-center">
-              <ul className="list-inline mb-0">
-                <li className="list-inline-item">
-                  <h5 className="font-weight-bold mb-0 d-block">
-                    {user && user.blog_count ? user.blog_count : 'Loading...'}
-                  </h5>
-                  <small className="text-muted">
-                    <i className="fas fa-pencil-alt mr-1"></i> Your Articles
-                  </small>
-                </li>
-              </ul>
-            </div>
-          )}
+      <div className="col-md-9">
+        <div className="bg-white shadow rounded overflow-hidden">
+          <div className="px-4 pt-0 pb-4 cover" style={{ padding: '20px', background: '#f4f6f9', borderRadius: '8px', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }}>
+            {isEditing ? (
+              <ProfileEdit user={user} setIsEditing={setIsEditing} />
+            ) : (
+              <div className="bg-light p-4 d-flex justify-content-center text-center">
 
-          <div className="px-4 py-3">
-            <h5 className="mb-0">About</h5>
-            <div className="p-4 rounded shadow-sm bg-light">
-              <p className="font-italic mb-0">
-                {user ? user.about : 'Loading about section...'}
-              </p>
-            </div>
+              </div>
+            )}
           </div>
 
           <div className="py-4 px-4">
             <div className="d-flex align-items-center justify-content-between mb-3">
               <h5 className="mb-0">Recent Articles By You</h5>
               <div>
-                <button onClick={handleCreateClick} className="btn btn-outline-primary btn-sm mr-2">
-                  Create New Article
-                </button>
-                <a href="#" onClick={toggleShowAll} className="btn btn-link text-muted">
-                  {showAll ? 'Show Less' : 'Show All'}
-                </a>
+                <button onClick={handleCreateClick} className="btn btn-outline-primary btn-sm mr-2">Create New Article</button>
+                <a href="#" onClick={toggleShowAll} className="btn btn-link text-muted">{showAll ? 'Show Less' : 'Show All'}</a>
               </div>
             </div>
             {isBlogEdit ? (
@@ -149,62 +136,56 @@ export default function ProfileIndex() {
             ) : (
               <div className="row">
                 {displayedBlogs.map((blog) => (
-                  <div key={blog.id} className="col-lg-3 col-md-4 col-sm-6">
-                    <div className="single-post-wrap style-box">
+                  <div key={blog.id} className="col-lg-4 col-md-6 col-sm-12">
+                    <div className="single-post-wrap style-box border rounded-lg overflow-hidden shadow-lg mb-4">
                       <div className="thumb">
-                        <img
-                          className="card-img rounded-0 img-fluid"
-                          style={{
-                            height: "180px",
-                            width: "100%",
-                            objectFit: "cover",
-                          }}
-                          src={`${blog.image}`}
-                          alt={blog.title || "Blog Thumbnail"}
-                        />
+                        <img className="card-img rounded-0 img-fluid" style={{ height: "180px", width: "100%", objectFit: "cover" }} src={`${blog.image}`} alt={blog.title || "Blog Thumbnail"} />
                       </div>
-                      <div className="details" style={{ padding: "10px" }}>
-                        <div className="post-meta-single mb-3 pt-1">
-                          <ul>
-                            <li>
-                              <a className="tag-base tag-light-blue" href="#">
-                                {blog.category ? blog.category.name : "Uncategorized"}
-                              </a>
-                            </li>
-                            <li>
-                              <i className="fa fa-user" />
-                              {user.name}
-                            </li>
+                      <div className="details p-3">
+                        <div className="post-meta-single mb-3">
+                          <ul className="list-unstyled">
+                            <li><a className="tag-base tag-light-blue" href="#">{blog.category ? blog.category.name : "Uncategorized"}</a></li>
+                            <li><i className="fa fa-user"></i> {user.name}</li>
                           </ul>
                         </div>
-                        <h6 className="title" style={{ fontSize: "1rem" }}>
-                          <Link to={`/blog/${blog.id}`}>{blog.title}</Link>
-                        </h6>
+                        <h6 className="title" style={{ fontSize: "0.9rem", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", width: "100%" , fontSize: "1rem" }}><Link to={`/blog/${blog.id}`}>{blog.title}</Link></h6>
                         <p style={{ fontSize: "0.9rem", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", width: "100%" }}>
                           {blog.short_description ? blog.short_description : "There is no description"}
                         </p>
                         <div className="d-flex">
-                          <Link to={`/blog/${blog.id}`} className="btn btn-base mt-3 mx-1 btn-blue px-2">
-                            Read More
-                          </Link>
+                          <Link to={`/blog/${blog.id}`} className="btn btn-base mt-3 mx-1 btn-blue px-2">Read More</Link>
+                          <button className="btn btn-base mt-3 mx-1 btn-blue px-2" onClick={() => handleBlogEditClick(blog)}>Edit Article</button>
                           <button
-                            className="btn btn-base mt-3 mx-1 btn-blue px-2"
-                            onClick={() => handleBlogEditClick(blog)}
-                          >
-                            Edit Article
-                          </button>
-                          <button
-                            type="button"
-                            className="btn btn-outline-danger mt-3 px-2"
-                            onClick={() => {
-                              const confirmed = window.confirm("Are you sure you want to delete this blog?");
-                              if (confirmed) {
-                                deleteblog(blog.id);
-                              }
-                            }}
-                          >
-                            <i className="fas fa-trash-alt"></i>
-                          </button>
+  type="button"
+  className="btn btn-outline-danger mt-3 px-2"
+  onClick={() => {
+    // Show SweetAlert confirmation dialog
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes, delete it!',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Proceed with the blog deletion if confirmed
+        deleteblog(blog.id)
+          .then(() => {
+            Swal.fire('Deleted!', 'Your blog has been deleted.', 'success');
+          
+          })
+          .catch((error) => {
+            Swal.fire('Error', 'There was a problem deleting the blog.', 'error');
+          });
+      }
+    });
+  }}
+>
+  Delete
+</button>
+
                         </div>
                       </div>
                     </div>
