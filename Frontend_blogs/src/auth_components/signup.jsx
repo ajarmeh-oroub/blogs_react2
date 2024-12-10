@@ -55,7 +55,7 @@ export default function Signup() {
     <div className="d-flex align-items-center justify-content-center vh-100">
       <div className="card shadow-lg border-0" style={{ width: "400px" }}>
         <div className="card-body p-4">
-          <h2 className="text-center fs-4 fw-bold text-dark">Signup for Free</h2>
+          <h2 className="text-center fs-4 fw-bold text-dark">Signup for NextPage</h2>
           <p className="text-center fs-6 text-muted">
             Or{" "}
             <Link
