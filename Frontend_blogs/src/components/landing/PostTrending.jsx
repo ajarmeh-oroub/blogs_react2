@@ -31,7 +31,7 @@ export default function PostTrending({ trends, latest,  data, favorites, toggleF
               <ul>
                 <li>
                   <i className="fa fa-clock-o" />
-                  {(new Date(trend.created_at)).getDay()}.{(new Date(trend.created_at)).getMonth()}.{(new Date(trend.created_at)).getFullYear()}
+                  {new Date(trend.created_at).toLocaleDateString()}
                 </li>
               </ul>
             </div>

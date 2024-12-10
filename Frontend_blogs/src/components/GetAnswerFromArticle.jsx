@@ -80,7 +80,7 @@ const GetAnswerFromArticle = ({ article: initialArticle = '', question: initialQ
         >
           {isFormVisible ? 'Hide' : 'Ask Article'}
         </button>
-        <span style={{ fontSize: '14px', color: '#777', fontStyle: 'italic' }}>Powered by AI</span>
+        <span style={{ fontSize: '14px', color: '#777', fontStyle: 'italic', padding: "10px" }}>Powered by AI</span>
       </div>
 
       {/* Form Section (Visible when the form button is clicked) */}
