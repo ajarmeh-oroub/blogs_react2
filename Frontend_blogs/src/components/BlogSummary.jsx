@@ -8,7 +8,7 @@ const BlogSummarizer = ({ blogarticle = "" }) => {
 
   const queryHuggingFace = async () => {
     const apiUrl = "https://api-inference.huggingface.co/models/facebook/bart-large-cnn";
-    const apiKey = "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"; // Replace with a secured method for storing keys.
+    const apiKey = "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"; // Replace with a secured method for storing keys.
 
     setLoading(true);
     setError(null);
