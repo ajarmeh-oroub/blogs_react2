@@ -153,6 +153,19 @@ export default function Signup() {
                 Signup
               </button>
             </div>
+            <p
+            className="text-center mt-4 mb-0"
+            style={{
+              fontSize: "14px",
+              color: "#6c757d",
+              textAlign:"center"
+            }}
+          >
+            {" "}
+            <Link to="/" style={{ color: "#007bff", fontWeight: "500" }}>
+             Back to home
+            </Link>
+          </p>
           </form>
         </div>
       </div>
