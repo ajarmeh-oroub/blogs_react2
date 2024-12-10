@@ -61,12 +61,11 @@ export default function Footer() {
           {/* Resources Section */}
           <div className="col-lg-4 col-sm-6">
             <div className="widget">
-              <h5 className="widget-title">RESOURCES</h5>
-              <ul className="resources_list">
-                <li>Free online guides and tutorials</li>
-                <li>Upcoming community events</li>
-                <li>Blog posts and articles</li>
-                <li>How-to videos on various topics</li>
+              <h5 className="widget-title">Features</h5>
+              <ul className="resources_list" style={{color: "#fff"}}>
+              <li>Effortlessly Discover Your Favorite Content</li>
+              <li>Experience a Smart Blog Enriched with AI Insights</li>
+              <li>Explore Categories Tailored to Your Interests</li>
               </ul>
             </div>
           </div>
