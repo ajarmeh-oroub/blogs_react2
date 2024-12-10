@@ -39,9 +39,13 @@ export default function BannerArea({ data, favorites, toggleFavorite }) {
           <div className="post-meta-single">
             <ul>
               <li>
-                <a
-                  className="tag-base tag-blue"
-                  style={{ fontSize:14 }}
+                <a className="tag-base"
+                  style={{
+                    fontSize:14,
+                    backgroundColor: "#ffbe00",
+                    borderRadius: "4px",
+                    color: "black",
+                  }}
                 >
                   {blog.category.name}
                 </a>
@@ -93,7 +97,10 @@ export default function BannerArea({ data, favorites, toggleFavorite }) {
                     }}
                     onClick={() => toggleFavorite(blog.id)}
                   />
-                  <a className="tag-base tag-blue" href="#">
+                  <a className="tag-base" href="#" style={{
+                    backgroundColor: "#ffbe00",
+                    borderRadius: "4px",
+                  }}>
                     {blog.category.name}
                   </a>
                 </div>
