@@ -33,8 +33,7 @@ export default function PostGrid({ grid, favorites, toggleFavorite}) {
           <div className="post-meta-single">
             <p>
               <i className="fa fa-clock-o" />
-              {(new Date(blog.created_at)).getDay()}.{(new Date(blog.created_at)).getMonth()}.{(new Date(blog.created_at)).getFullYear()}
-            </p>
+              {new Date(blog.created_at).toLocaleDateString()}            </p>
           </div>
           <h6 className="title">
             <Link to={`/blog/${blog.id}`}>
