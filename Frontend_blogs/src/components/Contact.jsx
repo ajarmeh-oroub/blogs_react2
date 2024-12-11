@@ -50,11 +50,17 @@ export default function Contact() {
   };
 
   return (
-    <section className="section-margin--small section-margin mt-4">
+    <section className="section-margin--small section-margin mt-5">
       <div className="container">
         <div className="d-none d-sm-block mb-5 pb-4">
           <div className="row">
             {/* Contact Info */}
+            <div className="mb-4 " style={{marginLeft:34}}>
+                <h2>Get in Touch</h2>
+                <p>
+                  Feel free to reach out to us using the form below. Whether you have questions, feedback, or need assistance, we're here to help!
+                </p>
+              </div>
             <div className="col-md-4 col-lg-3 mb-4 mb-md-0">
               <div className="media contact-info">
                 <span className="contact-info__icon">
@@ -91,6 +97,9 @@ export default function Contact() {
 
             {/* Contact Form */}
             <div className="col-md-8 col-lg-9">
+            
+             
+
               <form
                 onSubmit={handleSubmit}
                 className="form-contact contact_form"

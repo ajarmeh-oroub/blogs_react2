@@ -26,7 +26,7 @@ export default function Header() {
         return "Home";
       case currentPath === "/favorite":
         return "Favorites";
-      case currentPath === "/article":
+      case currentPath === "/articles":
         return "Articles";
       case currentPath === "/user":
         return "User Dashboard";
@@ -35,7 +35,7 @@ export default function Header() {
       case currentPath === "/about":
         return "About Us";
       case currentPath.startsWith("/blog"):
-        return "Article";
+        return "Articles";
       default:
         return "Page Not Found";
     }
@@ -109,18 +109,21 @@ export default function Header() {
         <nav className="navbar navbar-expand-lg">
           <div className="container nav-container">
             <div className="responsive-mobile-menu">
-              <div className="col-xl-6 col-lg-5 align-self-center">
-                <div className="logo text-md-left text-center">
-                  <a className="main-logo" href="index.html">
-                    <img src="/assets/img/logo.png" alt="img" />
-                  </a>
-                </div>
-              </div>
-              <div className="logo d-lg-none d-block">
-                <a className="main-logo" href="index.html">
-                  <img src="assets/img/logo.png" alt="img" />
-                </a>
-              </div>
+            <div className="col-xl-6 col-lg-5 align-self-center">
+
+  <div className="logo text-md-left text-center d-none d-lg-block">
+    <a className="main-logo" href="index.html">
+      <img src="/assets/img/logo.png" alt="Main Logo" />
+    </a>
+  </div>
+</div>
+
+<div className="logo d-lg-none text-center">
+  <a className="main-logo" href="index.html">
+    <img src="/assets/img/logo.png" alt="Responsive Logo" />
+  </a>
+</div>
+
               <button
                 className="menu toggle-btn d-block d-lg-none"
                 data-target="#nextpage_main_menu"
@@ -142,10 +145,10 @@ export default function Header() {
                   <Link to="/">Home</Link>
                 </li>
                 <li className="current-menu-item">
-                  <Link to="/article">Article</Link>
+                  <Link to="/articles">Articles</Link>
                 </li>
                 <li className="current-menu-item">
-                  <Link to="/contact">Contact</Link>
+                  <Link to="/contact">Contact Us</Link>
                 </li>
                 <li className="current-menu-item">
                   <Link to="/about">

@@ -135,7 +135,7 @@ export default function BlogDetails() {
   
   
     const payload = { comment: newComment, userid: currentUser.id };
-  
+
     setIsSubmitting(true); 
   
     axios
@@ -242,19 +242,24 @@ export default function BlogDetails() {
             <div className="comments-area mt-4">
                <h4>{comments.length} Comments</h4>
                 {comments.length === 0 ? ( <p>No comments yet. Be the first to comment!</p> ) :
-                 ( comments.map((comment) => 
-                 ( <div className="comment-list" key={comment.id}> 
-                 <div className="single-comment justify-content-between " style={{ borderBottom: '1px solid #ced4da', padding: '10px 0', }} > 
-                  <div className="user" style={{ flex: '0 0 auto', marginRight: '15px' }}> 
-                    <h6 style={{ fontWeight: 'bold', color: '#007BFF' }}>{comment.user.name}</h6> 
-                    <p style={{ fontSize: '12px', color: '#6c757d' }}>{new Date(comment.created_at).toLocaleString()}</p>
-                     </div> 
-                     <div className="desc" style={{ flex: '1 1 auto' }}>
-                       <p style={{ fontSize: '16px', color: '#495057' }}>{comment.comment}</p> 
-                       </div> 
-                       </div> 
-                       </div>
-                       )) )} </div>
+                comments.map((comment) => (
+                  <div className="comment-list" key={comment.id}>
+                    <div className="single-comment justify-content-between" style={{ borderBottom: '1px solid #ced4da', padding: '10px 0' }}>
+                      <div className="user" style={{ flex: '0 0 auto', marginRight: '15px' }}>
+                        <h6 style={{ fontWeight: 'bold', color: '#007BFF' }}>
+                          {comment.user?.name || "Anonymous"}
+                        </h6>
+                        <p style={{ fontSize: '12px', color: '#6c757d' }}>
+                          {comment.created_at ? new Date(comment.created_at).toLocaleString() : "Unknown date"}
+                        </p>
+                      </div>
+                      <div className="desc" style={{ flex: '1 1 auto' }}>
+                        <p style={{ fontSize: '16px', color: '#495057' }}>{comment.comment || "No comment"}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))};
+                 </div>
           </div>
 
        

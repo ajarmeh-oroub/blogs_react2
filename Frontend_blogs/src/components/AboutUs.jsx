@@ -25,7 +25,7 @@ export default function AboutUs() {
           <div className="col-lg-6" style={{ padding: '15px' }}>
             <div className="about-us-image" style={{ marginBottom: '30px' }}>
               <img
-                src="https://media.istockphoto.com/id/2149838473/photo/business-meeting-blurred-background-and-people-in-office-for-teamwork-collaboration-and.jpg?s=612x612&w=0&k=20&c=HIpFm-ZVNOgtaIS4ql974iU_nhqriMhfp22zs6dFNcs=" // Replace with your image
+                src="https://media.istockphoto.com/id/1658987072/photo/aerial-shot-of-people-walking-on-the-gay-pride-parade.jpg?s=612x612&w=0&k=20&c=fynCoY9f4R-GauVDTP5pnstBa0DQKri9Vr99KAxiKUA=" // Replace with your image
                 alt="Next Page Blog"
                 className="img-fluid rounded "
                 style={{ width: '100%', borderRadius: '8px' , marginTop:'150px' }}

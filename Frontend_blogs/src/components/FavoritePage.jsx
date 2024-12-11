@@ -134,7 +134,7 @@ export default function FavoritePage() {
                                 <li className="me-3">
                                   <i className="fa fa-user" />
                                   {blog.user
-                                    ? `${blog.user.first_name} ${blog.user.last_name}`
+                                    ? `${blog.user.name}`
                                     : 'Anonymous'}
                                 </li>
                                 <li className="me-3">
